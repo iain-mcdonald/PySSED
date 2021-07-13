@@ -1,0 +1,41 @@
+# Reject reasons
+#
+# CatName = Internal catalogue name as defined in survey list
+# CDSLabel = Label for filter in CDSTable (or "All")
+# Column = Column to query for rejection (e.g. quality filter)
+# Position = Position in column (0-indexed, or <0 for all)
+# Logical = < (less than), = (equal to), ~ (contains), ! (not equal to), > (greater than)
+# Result = "Mask" (display but don't use - for problematic data) or "Remove" (don't include at all - for rejects)
+# RejSurvey = survey to take action based on (or "Same")
+# RejFilter = filter in that survey to take action based on (or "Same")
+#
+# Two modes of operation: within surveys and between surveys.
+# Within: set by keyword RejSurvey and RejColumn = Same
+#         reject or mask <CatName><CDSLabel> if <Column>[Position] <Logical> <Value>
+#         uses any database field
+# Between: set by keyword Column (one of 'mag', 'magerr', 'flux', 'ferr') and Position = -1
+#          reject or mask <CatName><CDSLabel> if <RejSurvey><RejColumn><Column> <Logical> <Value>
+#          This mode can also use the Logical keyword prefixes:
+#           "d" (differential magnitude), "D" (absolute diff. mag.) [set Column = "mag"]
+#			"f" (flux ratio), "F" (absolute flux ratio) [set Column = "flux"]
+#           e.g., "F>" would be "absolute flux ratio greater than"
+#          Note that these prefixes cannot be used with the keyword "All"
+#
+# CatName	CDSLabel	Column	Position	Logical	Value	Result	RejSurvey	RejFilter
+# e.g. reject if:
+#2MASS	Jmag	Qflg	1	=	D	Mask	Same	Same
+#2MASS	Hmag	Qflg	2	=	D	Mask	Same	Same
+#2MASS	Kmag	Qflg	3	=	D	Mask	Same	Same
+#
+# Internal survey rejection based on quality flags
+IRAS	Fnu_12	q_Fnu_12	-1	=	1	Remove	Same	Same
+IRAS	Fnu_25	q_Fnu_25	-1	=	1	Remove	Same	Same
+IRAS	Fnu_60	q_Fnu_60	-1	=	1	Remove	Same	Same
+IRAS	Fnu_100	q_Fnu_100	-1	=	1	Remove	Same	Same
+
+# Inter-survey rejection based on comparative magnitudes (from McDonald et al. 2017)
+VHS	Jap3	mag	-1	d<	-1.0	Mask	2MASS	Jmag
+VHS	Hap3	mag	-1	d<	-1.0	Mask	2MASS	Hmag
+VHS	Ksap3	mag	-1	d<	-1.0	Mask	2MASS	Kmag
+
+#COBE	All	mag	-1	<	1	Mask	JCMT	F850
