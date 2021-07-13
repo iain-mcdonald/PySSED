@@ -1,0 +1,172 @@
+Created TAP+ (v1.2.1) - Connection:
+	Host: gea.esac.esa.int
+	Use HTTPS: True
+	Port: 443
+	SSL Port: 443
+Created TAP+ (v1.2.1) - Connection:
+	Host: geadata.esac.esa.int
+	Use HTTPS: True
+	Port: 443
+	SSL Port: 443
+PySSED has been asked to...
+(1) Process single object: VY Leo
+(2) Perform a simple (fast) fit
+    Using setup file: setup.default
+
+Setup file loaded.
+Fitting single object
+Resolving VY Leo using SIMBAD
+10 56 01.4689 +06 11 07.327
+Using co-ordinates: RA 164.00612041666668 deg, Dec 6.1853686111111115 deg
+INFO: Query finished. [astroquery.utils.tap.core]
+No Gaia object at that position.
+Saving data to ../proc/gaia_data.npy
+Could not find a Gaia EDR3 cross-match.
+Hipparcos id: HIP  53449
+ HIP  n_HIP  Sn  So    RArad     ...   pmRA     pmDE    Hpmag   B-V   HIP1
+                        deg      ... mas / yr mas / yr   mag    mag       
+----- ----- --- --- ------------ ... -------- -------- ------- ------ ----
+53449         5   0 164.00617926 ...   -23.90    -6.42  5.6114  1.256 HIP1
+CATALOGUE =  Gaia ; RA,DEC = 164.0060159040483 6.1853402225
+TableList with 1 tables:
+	'0:I/350/gaiaedr3' with 116 column(s) and 1 row(s) 
+  _r              EDR3Name               RA_ICRS     ... e_DEJ2000 RADEcorJ2000
+arcsec                                     deg       ...    mas                
+------ ----------------------------- --------------- ... --------- ------------
+ 0.026 Gaia EDR3 3864344017954021120 164.00601562942 ...    5.8238      -0.2358
+CATALOGUE =  Hipparcos ; RA,DEC = 164.00617926 6.18538436
+TableList with 1 tables:
+	'0:I/311/hip2' with 29 column(s) and 1 row(s) 
+  _r    HIP  n_HIP  Sn  So  Nc ...  VA  B-V   e_B-V   V-I   HIP1 Phot
+arcsec                         ...      mag    mag    mag            
+------ ----- ----- --- --- --- ... --- ------ ------ ------ ---- ----
+ 0.025 53449         5   0   1 ...   1  1.256  0.013  3.500 HIP1 Phot
+CATALOGUE =  Tycho ; RA,DEC = 164.00617926 6.18538436
+TableList with 1 tables:
+	'0:I/239/tyc_main' with 59 column(s) and 1 row(s) 
+  _r       TYC     Proxy    RAhms    ... Remark EpPhot   _RA.icrs     _DE.icrs  
+arcsec                               ...                   deg          deg     
+------ ----------- ----- ----------- ... ------ ------ ------------ ------------
+ 0.021 261   384 1       10 56 01.48 ...        EpPhot 164.00613935   6.18536823
+CATALOGUE =  PanStarrs ; RA,DEC = 164.00604296503425 6.185347534166667
+Empty TableList
+CATALOGUE =  GALEX ; RA,DEC = 164.00606540585184 6.1853535975
+TableList with 1 tables:
+	'0:II/335/galex_ais' with 91 column(s) and 1 row(s) 
+  _r    RAJ2000    DEJ2000   ... OName Size
+arcsec    deg        deg     ...       pix 
+------ ---------- ---------- ... ----- ----
+ 1.093 164.006138   6.185646 ...     N   --
+CATALOGUE =  Morel78 ; RA,DEC = 164.0060159040483 6.1853402225
+TableList with 1 tables:
+	'0:II/7A/catalog' with 30 column(s) and 1 row(s) 
+  _r   JP11     LID     n_LID   U      B    ... o_H rem ref     _RA       _DE   
+arcsec                         mag    mag   ...                 deg       deg   
+------ ---- ----------- ----- ------ ------ ... --- --- ---- --------- ---------
+  0.39 2009  1.00094705        8.450  7.240 ...   4     8057 164.00612   6.18537
+CATALOGUE =  APASS ; RA,DEC = 164.00602250428878 6.185342005833333
+Empty TableList
+CATALOGUE =  SDSS7 ; RA,DEC = 164.0060687059721 6.1853544891666665
+Empty TableList
+CATALOGUE =  Skymapper ; RA,DEC = 164.00602250428878 6.185342005833333
+Empty TableList
+CATALOGUE =  2MASS ; RA,DEC = 164.00610170717445 6.185363405833333
+TableList with 1 tables:
+	'0:II/246/out' with 62 column(s) and 1 row(s) 
+  _r    RAJ2000    DEJ2000   errMaj errMin ... extKey scanKey coaddKey coadd Opt
+arcsec    deg        deg     arcsec arcsec ...                                  
+------ ---------- ---------- ------ ------ ... ------ ------- -------- ----- ---
+ 0.340 164.006108   6.185454   0.29   0.29 ...     --   45904  1055770     9 Opt
+CATALOGUE =  DENIS ; RA,DEC = 164.00613140825658 6.1853714308333325
+Empty TableList
+CATALOGUE =  VVV ; RA,DEC = 164.0060159040483 6.1853402225
+Empty TableList
+CATALOGUE =  VHS ; RA,DEC = 164.0060159040483 6.1853402225
+Empty TableList
+CATALOGUE =  WISE ; RA,DEC = 164.00601993019498 6.185341310333333
+TableList with 1 tables:
+	'0:II/328/allwise' with 77 column(s) and 1 row(s) 
+  _r         AllWISE         RAJ2000     DEJ2000   ...   _2Mkey   d2M   _2M
+arcsec                         deg         deg     ...           arcsec    
+------ ------------------- ----------- ----------- ... --------- ------ ---
+ 0.583 J105601.48+061107.2 164.0061884   6.1853490 ... 845716917  0.475  2M
+CATALOGUE =  Akari ; RA,DEC = 164.0060687059721 6.1853544891666665
+TableList with 1 tables:
+	'0:II/297/irc' with 31 column(s) and 1 row(s) 
+  _r     objID      objName     errMaj errMin ... N09 N18  RAJ2000   DEJ2000 
+arcsec                          arcsec arcsec ...            deg       deg   
+------ --------- -------------- ------ ------ ... --- --- --------- ---------
+  0.54 200202276 1056014+061106   0.37   0.02 ...   2   4 164.00608   6.18520
+CATALOGUE =  AkariFIS ; RA,DEC = 164.0060687059721 6.1853544891666665
+TableList with 1 tables:
+	'0:II/298/fis' with 34 column(s) and 1 row(s) 
+  _r    objID     objName        S65     ... M160 Ndens RAJ2000  DEJ2000 
+arcsec                            Jy     ...              deg      deg   
+------ ------- -------------- ---------- ... ---- ----- -------- --------
+   4.1 3219435 1056016+061103       3.82 ...    0     0 164.0065   6.1843
+CATALOGUE =  IRAS ; RA,DEC = 164.00622051150296 6.185395505833333
+Empty TableList
+CATALOGUE =  COBE ; RA,DEC = 164.0061749698437 6.185383200833333
+TableList with 1 tables:
+	'0:J/ApJS/154/673/DIRBE' with 115 column(s) and 1 row(s) 
+  _r   n_DIRBE       DIRBE       SED ...  Bmag   Vmag     _RA       _DE   
+arcsec                               ...  mag    mag      deg       deg   
+------ ------- ----------------- --- ... ------ ------ --------- ---------
+  0.42         D10560146P0611076 SED ...   7.23   5.99 164.00608   6.18544
+CATALOGUE =  MSX ; RA,DEC = 164.00614460873751 6.185374997499999
+Empty TableList
+CATALOGUE =  JCMT ; RA,DEC = 164.0059895030864 6.185333089166666
+[]
+Rejecting data based on flags...
+Getting ancillary data...
+('Vizier', 'Gaia', 'I/350/gaiaedr3', 'Plx', 'e_Plx', 'Parallax', '1.', 2016., 1., 0.3)
+CATALOGUE =  I/350/gaiaedr3 ; RA,DEC = 164.0060159040483 6.1853402225
+TableList with 1 tables:
+	'0:I/350/gaiaedr3' with 116 column(s) and 1 row(s) 
+TableList with 1 tables:
+	'0:I/350/gaiaedr3' with 116 column(s) and 1 row(s) 
+('Vizier', 'Hipparcos', 'I/311/hip2', 'Plx', 'e_Plx', 'Parallax', '1.', 1991.25, 1., 1.)
+CATALOGUE =  I/311/hip2 ; RA,DEC = 164.00617926 6.18538436
+TableList with 1 tables:
+	'0:I/311/hip2' with 29 column(s) and 1 row(s) 
+TableList with 1 tables:
+	'0:I/311/hip2' with 29 column(s) and 1 row(s) 
+Saving data to ../proc/sed_data.npy
+[('Gaia', -0.22130251, -0.04237812, -0.5880814 , -0.158895 , 'GAIA/GAIA3.Gbp', 'BPmag',   5035.7505, 2.15750488e+03,  6.014082  , 3.3065e-02, 1.39585962e+01, 4.1868722e-01,  True)
+ ('Gaia', -0.22130251, -0.04237812, -0.5880814 , -0.158895 , 'GAIA/GAIA3.G', 'Gmag',   5822.3887, 4.05296826e+03,  3.834727  , 6.8080e-03, 9.44372101e+01, 5.9030640e-01,  True)
+ ('Gaia', -0.22130251, -0.04237812, -0.5880814 , -0.158895 , 'GAIA/GAIA3.Grp', 'RPmag',   7619.96  , 2.92443628e+03,  2.666092  , 2.0907e-02, 2.19252899e+02, 4.1815572e+00,  True)
+ ('Hipparcos',  0.        ,  0.        ,  0.        ,  0.       , 'Hipparcos/Hipparcos.Hp_MvB', 'Hpmag',   5586.    , 2.40569214e+03,  5.6114    , 5.7000e-03, 2.32686539e+01, 1.3263132e-03,  True)
+ ('Tycho', -0.143676  , -0.058068  ,  0.        ,  0.       , 'TYCHO/TYCHO.B_MvB', 'BTmag',   4220.    , 7.41386108e+02,  7.582     , 1.2000e-02, 3.74442101e+00, 4.4933055e-04,  True)
+ ('Tycho', -0.143676  , -0.058068  ,  0.        ,  0.       , 'TYCHO/TYCHO.V_MvB', 'VTmag',   5350.    , 1.13355688e+03,  6.114     , 1.1000e-02, 1.37874470e+01, 1.5166192e-03,  True)
+ ('GALEX', -0.148536  ,  0.941904  , -0.40987495, -0.110745 , 'GALEX/GALEX.FUV', 'FUVmag',   1549.0193, 2.65566162e+02, 18.1502    , 9.1800e-02, 2.86107752e-05, 2.3196226e-06,  True)
+ ('GALEX', -0.148536  ,  0.941904  , -0.40987495, -0.110745 , 'GALEX/GALEX.NUV', 'NUVmag',   2304.7375, 7.68313416e+02, 15.4499    , 1.4700e-02, 5.21034992e-04, 7.0068563e-06,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.U', 'U',   3570.6472, 6.57000000e+02,  8.45      , 3.0000e-01, 6.52067840e-01, 1.9562035e-03,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.B', 'B',   4378.381 , 1.01170215e+03,  7.24      , 3.0000e-01, 5.08869743e+00, 1.5266092e-02,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.V', 'V',   5466.114 , 8.89653992e+02,  5.78      , 3.0000e-01, 1.73682423e+01, 5.2104726e-02,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.R', 'R',   6695.5845, 2.06996851e+03,  3.53      , 3.0000e-01, 1.09010422e+02, 3.2703125e-01,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.I', 'I',   8565.145 , 2.31599707e+03,  1.44      , 3.0000e-01, 6.05988342e+02, 1.8179650e+00,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.J', 'J',  12100.904 , 3.19354834e+03,  0.47      , 3.0000e-01, 1.01931354e+03, 3.0579407e+00,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.H', 'H',  16303.578 , 2.86262646e+03, -0.44      , 3.0000e-01, 1.52192224e+03, 4.5657668e+00,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.K', 'K',  21420.344 , 5.78483643e+03, -0.72      , 3.0000e-01, 1.26818518e+03, 3.8045554e+00,  True)
+ ('Morel78', -0.213336  , -0.051696  , -0.5880814 , -0.158895 , 'Generic/Johnson_UBVRIJHKL.LI', 'L',  34450.156 , 8.79998047e+03, -0.99      , 3.0000e-01, 7.00311829e+02, 2.1009355e+00,  True)
+ ('WISE',  0.032904  , -0.127296  , -0.5735873 , -0.1549788, 'WISE/WISE.W4', 'W4mag', 220883.    , 4.10168281e+04, -1.227     , 6.0000e-03, 2.58917904e+01, 1.4268969e-01,  True)
+ ('Akari', -0.357336  , -0.663696  , -0.3979945 , -0.107535 , 'AKARI/IRC.S9W', 'S09',  82283.555 , 4.10271133e+04, -1.2951214 , 9.8900e+00, 1.56600006e+02, 9.8900003e+00,  True)
+ ('Akari', -0.357336  , -0.663696  , -0.3979945 , -0.107535 , 'AKARI/IRC.L18W', 'S18', 176094.9   , 9.96900703e+04, -1.3865994 , 3.3500e-01, 3.84700012e+01, 3.3500001e-01,  True)
+ ('AkariFIS',  1.154664  , -3.903696  , -0.3979945 , -0.107535 , 'AKARI/FIS.N60', 'S65', 629506.75  , 1.83383203e+05, -1.5651966 , 4.2800e-01, 3.82399988e+00, 4.2800000e-01,  True)
+ ('AkariFIS',  1.154664  , -3.903696  , -0.3979945 , -0.107535 , 'AKARI/FIS.WIDE-S', 'S90', 769035.2   , 3.30799812e+05, -1.6888846 , 1.5100e-01, 2.44400001e+00, 1.5099999e-01,  True)
+ ('COBE', -0.357336  ,  0.200304  , -0.01544456, -0.004173 , 'COBE/DIRBE.1p25m', 'F1.25',  12554.308 , 2.93756104e+03,  0.29028532, 3.2300e+01, 1.15690002e+03, 3.2299999e+01,  True)
+ ('COBE', -0.357336  ,  0.200304  , -0.01544456, -0.004173 , 'COBE/DIRBE.2p2m', 'F2.2',  22102.033 , 3.42575415e+03, -0.7841071 , 1.7000e+01, 1.30300000e+03, 1.7000000e+01,  True)
+ ('COBE', -0.357336  ,  0.200304  , -0.01544456, -0.004173 , 'COBE/DIRBE.3p5m', 'F3.5',  34914.168 , 8.24205957e+03, -0.99292773, 1.5000e+01, 6.86799988e+02, 1.5000000e+01,  True)
+ ('COBE', -0.357336  ,  0.200304  , -0.01544456, -0.004173 , 'COBE/DIRBE.4p9m', 'F4.9',  48668.695 , 6.63233008e+03, -0.7377642 , 6.7000e+00, 3.00799988e+02, 6.6999998e+00,  True)]pyssed.py:672: RuntimeWarning: divide by zero encountered in log10
+  magerr=2.5*np.log10(1+ferr/flux)
+
+Fitting SED with simple stellar model...
+model-bt-settl.dat
+Traceback (most recent call last):
+  File "pyssed.py", line 1287, in <module>
+    errmsg=pyssed(cmdtype,cmdparams,proctype,procparams,setupfile)
+  File "pyssed.py", line 1216, in pyssed
+    modeldata=get_model_list()
+  File "pyssed.py", line 233, in get_model_list
+    return modeldata
+NameError: name 'modeldata' is not defined

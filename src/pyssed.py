@@ -224,9 +224,11 @@ def get_model_list():
     params=np.stack((modelfiledata['teff'],modelfiledata['logg'],modelfiledata['metal'],modelfiledata['alpha']),axis=1)
     valueselector = modelfiledata.dtype.names[4:]
     values=modelfiledata[:][list(valueselector)[0]]
+
     # Recast onto rectilinear grid
-    interpfn = interpolate.griddata(params,values,(grid_t,grid_g,grid_m,grid_a), method='linear', rescale=True)
-    print (interpfn)
+    # This is where the problem is!
+    #interpfn = interpolate.griddata(params,values,(grid_t,grid_g,grid_m,grid_a), method='linear', rescale=True)
+    #print (interpfn)
     
     return modeldata
 
