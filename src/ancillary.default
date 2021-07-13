@@ -1,0 +1,22 @@
+# Define ancillary data sources to query
+# Server = server from which to get data (Gaia/Vizier/File*)
+# Name = internal name for catalogue
+# TableID = Server's name for table or filename
+# ColumnID = Server's name for column (or column header in file)
+# UncertaintyID = Server's name for column (or column header in file) of the uncertainty
+# ParameterID = Parameter represented by column**
+# Multiplier = multiplicative conversion factor to get standard units [**]
+# Epoch = year of observation for PM correction
+# BeamSize = radius of PSF in arcsec (minimum ability to separate sources, used to mark blending) (")
+# XMatchCone = positional accuracy in catalogue (cone cross-matching radius in ")
+# * File should be tab-separated and contain the column headings "RA" and "Dec"
+# ** Allowed parameters:
+#			Parallax [mas], Distance [pc]
+# [Parameters needing programming]
+#			Extinction [E(B-V) mag], Av [mag]
+#			Temperature [K], logg [cgs dex], Radius [R_Sun], Diameter [mas]
+#			Metallicity [Fe/H dex], Alpha [alpha/Fe dex]
+#    NB: Parallax and Distance are special quantities that act interchangably
+# Server	Name	TableID	ColumnID	UncertaintyID	ParameterID	Multiplier	Epoch	BeamSize	XMatchCone
+Vizier	Gaia	I/350/gaiaedr3	Plx	e_Plx	Parallax	1.	2016.0	1.0	0.3
+Vizier	Hipparcos	I/311/hip2	Plx	e_Plx	Parallax	1.	1991.25	1.0	1.0

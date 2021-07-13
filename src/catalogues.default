@@ -1,0 +1,29 @@
+# Define photometric surveys to query
+# Server = server from which to get data (Gaia/Vizier/File*)
+# Name = internal name for catalogue
+# TableID = Server's name for table or filename
+# Epoch = year of observation for PM correction
+# BeamSize = radius of PSF in arcsec (minimum ability to separate sources, used to mark blending) (")
+# XMatchCone = positional accuracy in catalogue (cone cross-matching radius in ")
+# * File should be tab-separated and contain the column headings "RA" and "Dec"
+# Server	Name	TableID	Epoch	BeamSize	XMatchCone
+Vizier	Gaia	I/350/gaiaedr3	2016.0	0.5	0.4
+Vizier	Hipparcos	I/311/hip2	1991.25	1.0	1.0
+Vizier	Tycho	I/239/tyc_main	1991.25	1.0	1.0
+Vizier	PanStarrs	II/349/ps1	2011.9	0.5	0.5
+Vizier	GALEX	II/335/galex_ais	2008.5	2.8	1.5
+Vizier	Morel78	II/7A/catalog	2016.0	5.0	5.0
+Vizier	APASS	II/336/apass9	2015.0	3.1	1.3
+Vizier	SDSS7	II/294/sdss7	2008.0	1.4	0.5
+Vizier	Skymapper	II/358/smss	2015.0	1.4	0.5
+Vizier	2MASS	II/246/out	2003.0	1.0	0.5
+Vizier	DENIS	B/denis/denis	1998.5	3.0	1.0
+Vizier	VVV	II/348/vvv2	2016.0	0.3	1.0
+Vizier	VHS	II/367/vhs_dr5	2016.0	0.3	1.0
+Vizier	WISE	II/328/allwise	2015.39	6.0	1.0
+Vizier	Akari	II/297/irc	2008.0	5.5	1.0
+Vizier	AkariFIS	II/298/fis	2008.0	26.5	5.0
+Vizier	IRAS	II/125/main	1985.0	180.0	15.0
+Vizier	COBE	J/ApJS/154/673/DIRBE	1991.9	2520.0	10.0
+Vizier	MSX	V/114/msx6_gp	1996.5	20.0	2.0
+File	JCMT	../data/ness.txt	2020.0	10.0	3.0
