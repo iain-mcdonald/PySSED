@@ -25,6 +25,8 @@ from astroquery.simbad import Simbad        # Allow SIMBAD queries
 from astroquery.vizier import Vizier        # Allow VizieR queries
 from astroquery.gaia import Gaia            # Allow Gaia queries
 
+import itertools
+
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 def parse_args(cmdargs):
@@ -225,10 +227,27 @@ def get_model_list():
     valueselector = modelfiledata.dtype.names[4:]
     values=modelfiledata[:][list(valueselector)[0]]
 
+    print(grid_t.shape, params.shape, values.shape)
+    interp_grid_points = np.array(list(itertools.product(np.unique(modelfiledata['teff']),np.unique(modelfiledata['logg']),np.unique(modelfiledata['metal']),np.unique(modelfiledata['alpha']))))
+    print(interp_grid_points)
+    print(interp_grid_points.shape)
+    #exit()
+
     # Recast onto rectilinear grid
     # This is where the problem is!
     #interpfn = interpolate.griddata(params,values,(grid_t,grid_g,grid_m,grid_a), method='linear', rescale=True)
-    #print (interpfn)
+    interpfn = interpolate.griddata(params,values,interp_grid_points, method='linear', rescale=True)
+    import pandas as pd
+    df = pd.DataFrame(interpfn)
+    modeldata = df.interpolate().to_numpy()
+    #interpfn = interpolate.RegularGridInterpolator((grid_t,grid_g,grid_m,grid_a), values.reshape((grid_t.shape[0], grid_g.shape[1], grid_m.shape[2], grid_a.shape[3])), method='linear', bounds_error=False, fill_value=None)
+    #modeldata = interpfn(interp_grid_points)
+    print(modeldata)
+    print(modeldata.shape)
+    print(np.sum(np.isfinite(modeldata)))
+    print(interpfn)
+    print(interpfn.shape)
+    print(np.sum(np.isfinite(interpfn)))
     
     return modeldata
 
