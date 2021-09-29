@@ -2,20 +2,17 @@
 # Format must be [parameter] tab [value(s)]
 # Edit with caution: limited checking for formats
 # (e.g. int vs. float, float vs. str, missing values, missing entries)
+# (e.g. don't introduce whitespace on end of lines, etc.)
 
-# Set the amount of chatter (0-99)
-verbosity	99
-
-# Default cone search radius for source from supplied position (arcseconds)
-# 0.5 arcsec is just below minimum separation of Gaia sources
-GaiaCone	0.5
+# Set the amount of chatter (0 = silent; 10-70 = typical; 99 = debug)
+verbosity	50
 
 # Default epoch to use for Gaia (Gaia EDR3 = 2016.0)
 GaiaEpoch	2016.0
 
-# ---------------------
-# Sources of photometry
-# ---------------------
+# -----------------------------------
+# Sources and treatment of photometry
+# -----------------------------------
 
 # File to use for survey descriptors
 SurveyFile	catalogues.default
@@ -26,52 +23,182 @@ FilterFile	filters.default
 # Default error (as fraction of flux) to assign when error column = None
 DefaultError	0.3
 
+# Minimum error (as fraction of flux) assumed when merging photometry in the same filter
+# Improves weighting when dealing with overly precise magnitudes
+# (e.g. SDSS magnitudes for variable targets)
+MinPhotError	0.1
+
+# Include photometric data in weighted average if:
+# 	Max(Error_1, MinPhotError) / Max(Error_n, MinPhotError) > PhotWeightLimit
+# where 1 is the most-precise photometry and n is the photometry being tested
+PhotWeightingLimit	0.2
+
+# Multiples of the photometric error allowed for merging
+# For two points, this is the mean of the photometric fluxes; for 3+ it is the median
+PhotSigmaLimit	3
+
 # File containing masking and rejection criteria
 RejectFile	reject.default
+
+# Row limit
+VizierRowLimit	100000
+
+# --------------------------
+# Treatment of area searches
+# --------------------------
+
+# Master source catalogue
+# Catalogue of sources from which to start the matching process
+# Normally be the deepest/densest catalogue in the field
+# Must be an internal catalogue name from SurveyFile
+PrimaryCatRef	Gaia
+
+# Report of sources not assigned to a primary catalogue source?
+# False = only report on sources in PrimaryCatRef
+# True = also create sources that only appear in other catalogues
+ReportSecondarySources	1
+
+# Name output by RA/Dec [False] or object name in PrimaryCatRef [True]?
+UseCatNameAsOutputName	1
+
+# --------------------------
+# Astrometry error treatment
+# --------------------------
+
+# Default cone search radius for source from supplied position (arcseconds)
+# 0.5 arcsec is just below minimum separation of Gaia sources
+GaiaCone	0.5
+
+# Position error multiplier
+# Increase the cross-matching cone radius (XMatchCone) parameter by this factor
+PosErrMult	10.
+
+# Increase search radius due to proper motion error?
+AddPMErr	1
+
+# Increase search radius due to proper motion from epoch error over <n> years
+EpochPMErrYears	1.
+
+# ---------------------------------------
+# Sources and treatment of ancillary data
+# ---------------------------------------
 
 # File containing ancillary information queries
 AncillaryFile	ancillary.default
 
-# Ancillary weighting limit
-# When the uncertainty of the best-fitting data source is more than this many times the second-best-fitting data source, then use a weighted average
+# Ancillary weighting limit (see MinPhotError, PhotWeightingLimit, PhotSigmaLimit)
+MinAncError	0.1
 AncWeightingLimit	0.2
+AncSigmaLimit	3
 
-# ------------------
-# Use of save points
-# ------------------
-
-# Use/save Gaia data from/to file?
-# Use/save SED data from/to file?
+# -----------------------------
+# Use of save points and output
+# -----------------------------
 # (NB: May be security/portability issues with pickle data - may want to disallow online)
-UseExistingData	0
-SaveGaia	1
-GaiaFile	../proc/gaia_data.npy
+
+# Use/save photometric data from/to file? (Most useful for area searches)
+UseExistingPhot	0
+# Single-source data storage
+SavePhot	1
+PhotFile	../proc/phot_data.npy
+# Area search data storage
+PhotTempDir	../proc/phot/
+AncTempDir	../proc/anc/
+
+# Use/save SED data from/to file *for reload*?
 UseExistingSEDs	0
-SaveSEDs	1
+SaveSEDs	0
 SEDsFile	../proc/sed_data.npy
+
+# Save SED/ancillary data for each individual target from/to file *as output*?
+SaveEachSED	1
+SaveEachAnc	1
+SEDsDir	../output/
+AncDir	../output/
 
 # Output SED(s) to plot(s)
 PlotSEDs	1
 PlotDir	../output/
 
+# Output files for stellar parameters and ancillary data
+OutputParamFile	../output/hrd.dat
+OutputAncFile	../output/anc.dat
+# Append 0 = write new file, 1 = append existing,
+#        2 = continue existing list (useful for continuing after crashes)
+OutputAppend	0
+
 # -------------------------------------------------------------------
 # Fitting parameters for "simple" and "fit" stellar atmosphere models
 # -------------------------------------------------------------------
 
-# Stellar model atmosphere package to use
+# OUTLIER REJECTION
+# Maximum number of points to iteratively remove to improve fit (can be zero)
+MaxOutliers	15
+# Maximum number of outliers to test simultaneously without rejecting any
+MaxSeqOutliers	8
+# Minimum factor to classify outliers (e.g. "2" tests points <0.5 or >2 times the model flux)
+OutlierTolerance	3.
+# Minimum improvement in reduced chi^2 to justify removing a point (cumulative for sequential points)
+OutlierChiSqMin	2.0
+
+# FITTING LIMITS: Minimum and maximum wavelengths to fit (microns)
+# Change these to avoid regions too prone to UV dust absorption or IR dust emission
+MinLambda	0.3
+MaxLambda	25.
+
+# MODEL ATMOSPHERE LIMITS: Stellar model atmosphere package to use
 # Requires src/model-<ModelCode>.dat, generated by makemodel.py
+# WARNING! Recreating pre-computed model grids takes a long time.
+# I mean a really long time... like a few days.
+# Edit this section with care.
+# New models can be introduced using makemodel.py
 ModelCode	bt-settl
+# If the following limits are changed then the grid needs recomputed 
+RecomputeModelGrid	0
 # Restrict models to those between these temperatures, log(g), [Fe/H] and [alpha/Fe]
-ModelTeffLo	2000.
+# This can improve speed
+#ModelTeffLo	1899.
+#ModelTeffHi	5001.
+#ModelLoggLo	-9.99
+#ModelLoggHi	3.01
+#ModelFeHLo	-0.51
+#ModelFeHHi	0.51
+#ModelAFeLo	-9.99
+#ModelAFeHi	0.21
+ModelTeffLo	1899.
 ModelTeffHi	999999.
 ModelLoggLo	-9.99
 ModelLoggHi	9.99
 ModelFeHLo	-9.99
 ModelFeHHi	9.99
 ModelAFeLo	-9.99
-ModelAFeHi	0.4
+ModelAFeHi	0.41
 
-# Minimum and maximum wavelengths to fit (Angstroms)
-# Change these to avoid regions too prone to UV dust absorption or IR dust emission
-MinLambda	110.
-MaxLambda	90000.
+# Starting/default guess for parameters - can help optimise speed
+ModelStartTeff	3000.
+ModelStartLogg	0.0
+ModelStartFeH	0.0
+ModelStartAFe	0.0
+
+# Parameter revisions used in simple model fitting
+# Estimate log(g) based on an initial BB fit?
+PrecomputeLogg	0
+# Revise log(g) during outlier rejection and in final fit?
+IterateLogg	1
+# Default mass to assume for fitting
+DefaultMass	1.0
+# Use L propto M^3.5 to estimate mass if on main sequence (requires IterateLogg)
+UseMSMass	1
+
+# ---------------------
+# Extinction parameters
+# ---------------------
+
+# For the moment, de-extinction is calculated on a point wavelength (i.e. not colour-corrected)
+DefaultEBV	0.50
+DefaultRV	3.1
+
+# Extinction map
+# None = use DefaultEBV
+# Gontcharov2017 = use Gontcharov et al. (2017)
+ExtMap	Gontcharov2017

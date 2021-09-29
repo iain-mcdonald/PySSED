@@ -9,33 +9,139 @@
 # RejSurvey = survey to take action based on (or "Same")
 # RejFilter = filter in that survey to take action based on (or "Same")
 #
+# """
 # Two modes of operation: within surveys and between surveys.
-# Within: set by keyword RejSurvey and RejColumn = Same
-#         reject or mask <CatName><CDSLabel> if <Column>[Position] <Logical> <Value>
-#         uses any database field
-# Between: set by keyword Column (one of 'mag', 'magerr', 'flux', 'ferr') and Position = -1
-#          reject or mask <CatName><CDSLabel> if <RejSurvey><RejColumn><Column> <Logical> <Value>
+# Within: Set by keyword RejSurvey and RejColumn = Same
+#         Reject or mask <CatName><CDSLabel> if <Column>[Position] <Logical> <Value>
+#         Uses any database field
+#         Note that differential magnitudes must use the "Between" system
+#         This method also works for ancillary data.
+# Between: Set by keyword Column (one of 'mag', 'magerr', 'flux', 'ferr', or 'anc') and Position = -1
+#          Reject or mask <CatName><CDSLabel> if <RejSurvey><RejColumn><Column> <Logical> <Value>
 #          This mode can also use the Logical keyword prefixes:
-#           "d" (differential magnitude), "D" (absolute diff. mag.) [set Column = "mag"]
-#			"f" (flux ratio), "F" (absolute flux ratio) [set Column = "flux"]
-#           e.g., "F>" would be "absolute flux ratio greater than"
-#          Note that these prefixes cannot be used with the keyword "All"
+#	           	"d" (differential magnitude), "D" (absolute diff. mag.) [set Column = "mag"]
+#				"f" (flux ratio), "F" (absolute flux ratio) [set Column = "flux"]
+#	           	e.g., "F>" would be "absolute flux ratio greater than"
+#          This mode works similarly for ancillary data [set Column = 'anc']:
+#				"d" (difference), "D" (absolute difference)
+#				"f" (ratio), "F" (absolute ratio)
+#	           	e.g., "F> 1.5" would be "reject [A] if [A/B] or [B/A] exceeds 1.5"
+#			   	where A is the left-hand two columns and B is the right-hand two columns
+#          (!) SED data cannot reject ancillary data and vice versa
+#
+# If multiple observations exist through the same filter,
+# and if a preference is not given through this document,
+# then the weighted average flux will be taken.
 #
 # CatName	CDSLabel	Column	Position	Logical	Value	Result	RejSurvey	RejFilter
 # e.g. reject if:
 #2MASS	Jmag	Qflg	1	=	D	Mask	Same	Same
 #2MASS	Hmag	Qflg	2	=	D	Mask	Same	Same
 #2MASS	Kmag	Qflg	3	=	D	Mask	Same	Same
-#
+# """
+
+# ------------------------------------------------
 # Internal survey rejection based on quality flags
 IRAS	Fnu_12	q_Fnu_12	-1	=	1	Remove	Same	Same
 IRAS	Fnu_25	q_Fnu_25	-1	=	1	Remove	Same	Same
 IRAS	Fnu_60	q_Fnu_60	-1	=	1	Remove	Same	Same
 IRAS	Fnu_100	q_Fnu_100	-1	=	1	Remove	Same	Same
 
-# Inter-survey rejection based on comparative magnitudes (from McDonald et al. 2017)
-VHS	Jap3	mag	-1	d<	-1.0	Mask	2MASS	Jmag
-VHS	Hap3	mag	-1	d<	-1.0	Mask	2MASS	Hmag
-VHS	Ksap3	mag	-1	d<	-1.0	Mask	2MASS	Kmag
+# Criteria from McDonald et al. (2017)
+# (xvii),(xviii) Remove DIRBE and IRAS if < n Jy
+DIRBE	F12	F12	-1	<	2000	Mask	Same	Same
+DIRBE	F25	F25	-1	<	2000	Mask	Same	Same
+IRAS	Fnu_12	Fnu_12	-1	<	25	Mask	Same	Same
+IRAS	Fnu_25	Fnu_25	-1	<	200	Mask	Same	Same
+# (xix)-(xxiii) WISE data rejection
+WISE	W1mag	W1mag	-1	<	3.0	Mask	Same	Same
+WISE	W2mag	W2mag	-1	<	6.5	Mask	Same	Same
+WISE	W3mag	W3mag	-1	<	-1.5	Mask	Same	Same
+WISE	W4mag	W4mag	-1	<	-2.3	Mask	Same	Same
+WISE	W4mag	W4mag	-1	>	6.5	Mask	Same	Same
+
+# """
+# Inter-survey rejection based on comparative magnitudes
+# e.g.: VHS	Jap3	mag	-1	d<	-1.0	Mask	2MASS	Jmag
+# will reject VHS J-band data if it is more than 1.0 mag fainter than 2MASS J.
+# Care should be taken to ensure these criteria work near the signal-to-noise cutoff.
+# This can be achieved by removing poor-quality photometry through a maximum allowed error,
+# or using the internal flagging options above.
+# """
+
+# The following are from McDonald et al. (2017)
+# (i) SDSS u and z band data are not removed here; (ii)-(iv):
+SDSS7	gmag	mag	-1	d<	-1.0	Mask	Hipparcos	Hpmag
+SDSS7	rmag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
+SDSS7	imag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
+# (v-ix) APASS B magnitudes 9.95 < APASS < 10.xx mag not removed
+# (ix) APASS i-band data limited by itself, not by r-band; (v-ix):
+APASS	Bmag	mag	-1	d<	-0.2	Mask	Tycho	BTmag
+APASS	Bmag	mag	-1	d<	-0.6	Mask	Hipparcos	Hpmag
+APASS	Vmag	mag	-1	d<	-0.2	Mask	Hipparcos	Hpmag
+APASS	g_mag	mag	-1	d<	-0.2	Mask	Hipparcos	Hpmag
+APASS	r_mag	mag	-1	d<	-0.2	Mask	Hipparcos	Hpmag
+APASS	i_mag	mag	-1	d<	-0.5	Mask	Hipparcos	Hpmag
+# (x-xii) Tycho/Mermilliod removal not implemented
+# (xiii-xiv) DENIS removal not implemented. UKIDSS/IPHAS not included anyway.
+# (xv) DIRBE removal modified to remove if the absolute flux ratio exceeds 2:
+DIRBE	F1.25	flux	-1	F>	2	Mask	2MASS	Jmag
+DIRBE	F2.2	flux	-1	F>	2	Mask	2MASS	Kmag
+# (xvii)-(xxiii) treated above
+# (xxiv) not treated here
+# (xxv)-(xxix) MSX not used
+# (xxx) Mermilliod not used; APASS-Morel merging used instead
+# (xxxi) Merging used for SDSS-APASS instead
+# (xxxii) 2MASS used instead of DENIS (and now VISTA) only if photometry very different
+DENIS	Jmag	mag	-1	d<	-0.7	Mask	2MASS	Jmag
+DENIS	Kmag	mag	-1	d<	-0.7	Mask	2MASS	Kmag
+# (xxxiii):
+DIRBE	F12	flux	-1	F>	1	Mask	IRAS	Fnu_12
+DIRBE	F25	flux	-1	F>	1	Mask	IRAS	Fnu_25
+# (xxxiv) Now treated through options
+
+# Additional constraints:
+# Treat VISTA data like DENIS data: use 2MASS where there's a magnitude mismatch
+VHS	Jap3	mag	-1	d<	-0.7	Mask	2MASS	Jmag
+VHS	Hap3	mag	-1	d<	-0.7	Mask	2MASS	Hmag
+VHS	Ksap3	mag	-1	d<	-0.7	Mask	2MASS	Kmag
+VVV	Jmag3	mag	-1	d<	-0.7	Mask	2MASS	Jmag
+VVV	Hmag3	mag	-1	d<	-0.7	Mask	2MASS	Hmag
+VVV	Ksmag3	mag	-1	d<	-0.7	Mask	2MASS	Kmag
+# Use APASS instead of SDSS where APASS mag < 9.95
+SDSS7	gmag	mag	-1	<	9.95	Mask	APASS	g_mag
+SDSS7	rmag	mag	-1	<	9.95	Mask	APASS	r_mag
+SDSS7	imag	mag	-1	<	9.95	Mask	APASS	i_mag
+SDSS7	zmag	mag	-1	<	9.95	Mask	APASS	i_mag
+# Lose SDSS if brighter Tycho target
+SDSS7	gmag	mag	-1	d<	-0.2	Mask	Tycho	BTmag
+SDSS7	rmag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
+SDSS7	imag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
+# Lose SDSS if brighter Gaia target
+SDSS7	gmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
+SDSS7	rmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
+SDSS7	imag	mag	-1	d<	-2.0	Mask	Gaia	RPmag
+# Lose SDSS if brighter PanStarrs target
+SDSS7	gmag	mag	-1	d<	-0.5	Mask	PanStarrs	gmag
+SDSS7	rmag	mag	-1	d<	-0.5	Mask	PanStarrs	rmag
+SDSS7	imag	mag	-1	d<	-0.5	Mask	PanStarrs	imag
+SDSS7	zmag	mag	-1	d<	-0.5	Mask	PanStarrs	zmag
+# Lose Morel if greatly different from Gaia, Tycho or Hipparcos
+Morel78	U	mag	-1	d>	0.5	Mask	Gaia	BPmag
+Morel78	B	mag	-1	D>	2.0	Mask	Gaia	BPmag
+Morel78	V	mag	-1	D>	2.0	Mask	Gaia	Gmag
+Morel78	R	mag	-1	D>	2.0	Mask	Gaia	RPmag
+Morel78	I	mag	-1	D>	5.0	Mask	Gaia	RPmag
+Morel78	U	mag	-1	d>	0.5	Mask	Tycho	BTmag
+Morel78	B	mag	-1	D>	2.0	Mask	Tycho	BTmag
+Morel78	V	mag	-1	D>	2.0	Mask	Tycho	VTmag
+Morel78	R	mag	-1	D>	5.0	Mask	Tycho	VTmag
+Morel78	U	mag	-1	d>	0.5	Mask	Hipparcos	Hpmag
+Morel78	B	mag	-1	D>	2.0	Mask	Hipparcos	Hpmag
+Morel78	V	mag	-1	D>	2.0	Mask	Hipparcos	Hpmag
 
 #COBE	All	mag	-1	<	1	Mask	JCMT	F850
+
+Morel78	V	mag	-1	D>	2.0	Mask	Hipparcos	Hpmag
+
+#Tabur	Per1	anc	-1	F>	1.1	Mask	VSX	Period

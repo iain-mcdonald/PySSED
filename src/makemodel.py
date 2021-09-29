@@ -45,11 +45,11 @@ def makemodel(model,setupfile):
 
     # Set up model flux array
     nmodels=len(files)
-    modelflux=np.zeros((nmodels,len(filtdata['svoname'])+4))
+    modelflux=np.zeros((nmodels,len(filtdata['svoname'])+5))
 
     # Add headers to file
 # Re-introduce these once complete
-    headers=np.append(['#teff','logg','metal','alpha'],filtdata['svoname'],axis=0)
+    headers=np.append(['#teff','logg','metal','alpha','lum'],filtdata['svoname'],axis=0)
     np.savetxt("model-"+model+".dat", np.expand_dims(headers,1), fmt='%s', delimiter=' ', newline=' ')
     
     # Loop over models
@@ -63,10 +63,17 @@ def makemodel(model,setupfile):
         print (j+1,"/",nmodels,f,":",float(f[1:6]),float(f[7:12]),float(f[13:18]),float(f[19:24]))
         modelpath="../models/"+model+"/"+f
         modeltable=np.loadtxt(modelpath,dtype=float,delimiter=" ")
-        # Convert F_lambda to F_nu
+        # Convert F_lambda to F_nu in W/m^2/Hz
+        # Multiply by Angstroms**2 and divide by 3e21 and multiply by 1e26
+        # following https://www.stsci.edu/~strolger/docs/UNITS.txt
         modeltable[:,1]*=modeltable[:,0]
         modeltable[:,1]*=modeltable[:,0]
-        modeltable[:,1]/=2.99792458E+21
+        modeltable[:,1]/=2.99792458E-05
+        # Sum flux (Fnu dnu) to get luminosity
+        hertz=299792458./(modeltable[:,0]/1.e10)
+        dnu=-np.diff(hertz)
+        lum=np.sum(modeltable[0:-1,1]*dnu)
+        modelflux[j,4]=lum
         # Loop over filters
         for i in np.arange(len(filtdata['svoname'])):
             filt=filtdata['svoname'][i]
@@ -84,7 +91,7 @@ def makemodel(model,setupfile):
             filtinterp[filtinterp<0]=0
             filtinterp/=np.sum(filtinterp)
             # Convolve filter transmission with model
-            modelflux[j,i+4]=np.sum(modelsubset[:,1]*filtinterp)
+            modelflux[j,i+5]=np.sum(modelsubset[:,1]*filtinterp)
 
         # Append output file with reduced model
         with open("model-"+model+".dat", "ab") as f:
