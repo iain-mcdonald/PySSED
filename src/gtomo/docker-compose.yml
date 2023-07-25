@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  app:
+    build:
+      context: ./
+    env_file:
+      - .env
+    ports:
+      - 8050:8050
+    volumes:
+      - ./sda:/sda
+      - /home/ncox/Projects/_data/gaia/:${SERVICE_APP_DATA}
+      - ./_data/input_dir/:${SERVICE_INPUT_DIR}:ro
+      - ./_data/output_dir/:${SERVICE_OUTPUT_DIR}
+      - ./_data/user_app_data/:${SERVICE_USER_APP_DATA}
+      - ./_data/user_data/:${SERVICE_USER_DATA}

@@ -1,0 +1,19 @@
+.div {
+    background-color: rgb(255,255,255); 
+    color: rgb(198,143,10);
+}
+
+.tab {
+    background-color: rgb(83,73,152); 
+    color: rgb(198,143,10);
+}
+
+.tab--selected {
+    background-color: rgb(83,73,152); 
+    color: rgb(198,143,10);
+}
+
+.tab--selected:hover {
+    background-color: rgb(198,143,10); 
+    color: rgb(198,143,10);
+}

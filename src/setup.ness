@@ -1,0 +1,384 @@
+# Setup file for PySSED
+# Format must be [parameter] tab [value(s)]
+# Edit with caution: limited checking for formats
+# (e.g. int vs. float, float vs. str, missing values, missing entries)
+# (e.g. don't introduce whitespace on end of lines, etc.)
+
+# Set the amount of chatter (0 = silent; 10-70 = typical; 99 = debug)
+verbosity	50
+
+# Default epoch to use for Gaia (Gaia EDR3 = 2016.0)
+GaiaEpoch	2016.0
+
+# -----------------------------------
+# Sources and treatment of photometry
+# -----------------------------------
+
+# File to use for survey descriptors
+SurveyFile	catalogues.ness
+
+# File to use for filter definitions and settings
+FilterFile	filters.ness
+
+# Default error (as fraction of flux) to assign when error column = None
+DefaultError	0.3
+
+# Minimum error (as fraction of flux) assumed when merging photometry in the same filter
+# Improves weighting when dealing with overly precise magnitudes
+# (e.g. SDSS magnitudes for variable targets)
+MinPhotError	0.1
+
+# Include photometric data in weighted average if:
+# 	Max(Error_1, MinPhotError) / Max(Error_n, MinPhotError) > PhotWeightLimit
+# where 1 is the most-precise photometry and n is the photometry being tested
+PhotWeightingLimit	0.2
+
+# Multiples of the photometric error allowed for merging
+# For two points, this is the mean of the photometric fluxes; for 3+ it is the median
+PhotSigmaLimit	3
+
+# File containing masking and rejection criteria
+RejectFile	reject.default
+
+# Row limit
+VizierRowLimit	250000
+
+# Number of times to retry if could not connect to server
+ServerRetries	10
+
+# --------------------------
+# Treatment of area searches
+# --------------------------
+
+# Master source catalogue
+# Catalogue of sources from which to start the matching process
+# Normally be the deepest/densest catalogue in the field
+# For fields where it is significant, proper motion data is adviseable
+# Must be an internal catalogue name from SurveyFile
+PrimaryCatRef	Gaia
+
+# Trim sources with RA < RA1 and RA > RA2 for box searches
+# 0 = rectangular search, 1 = wedge search
+TrimBox	1
+
+# Report of sources not assigned to a primary catalogue source?
+# False = only report on sources in PrimaryCatRef
+# True = also create sources that only appear in other catalogues
+ReportSecondarySources	1
+
+# Name output by RA/Dec [False] or object name in PrimaryCatRef [True]?
+UseCatNameAsOutputName	1
+
+# Treatment of proper motion correction
+# 0 = No PM correction
+# 1 = Use PM from master catalogue (PrimaryCatRef), revert to FixedPM for others
+# 2 = Use fixed PM for entire system (mas/yr)
+# If PrimaryCatRef != Gaia or Hipparcos then use column IDs listed below
+PMCorrType	1
+FixedPMRA	0.00
+FixedPMDec	0.00
+PMRAColID	PMRA
+PMDecColID	PMDec
+PMRAErrColID	PMRAErr
+PMDecColID	PMDecErr
+
+# Treatment of potential matches
+# None+One: If a lo-res catalogue matches a hi-res catalogue, but not vice versa
+# 0 = assign the match
+# 1 = treat as two separate sources
+RobustLoResMatch	0
+# Many+One: If a lo-res catalogue matches several sources,
+# but is a match to only one source in the hi-res catalogue
+# 0 = assign the match
+# 1 = treat as a potential blend
+DeblendLoResMatch	0
+# Many+None: If a lo-res catalogue matches several sources,
+# but is not a match to any source in the hi-res catalogue
+# 0 = ignore the match
+# 1 = assign to brightest matching source in hi-res catalogue
+# 2 = assign to closest source in hi-res catalogue
+# 3 = assign based on a weighting of 1 and 2
+# 4 = try to deblend between sources
+DeblendLoResNonMatch	4
+# Minimum weight to consider a source as a significant blend
+DeblendMinWeight	0.1
+# Minimum weight of brightest source to activiate deblending
+DeblendActivationWeight	0.9
+# Maximum number of blends to consider
+# Above this number of blends, matching will be performed via intermediate catalogues
+# (e.g. Gaia -> AllWISE -> IRAS)
+MaxBlends	10
+
+# Compute stars with zero or bad distance estimates?
+UseStarsWithNoDist	1
+# Maximum allowed fractional error in distance or parallax
+MaxDistError	0.999
+# If err>MaxDistError or no distance estimate but UseStarsWithNoDist>0
+# then use this default distance [in pc]
+DefaultDist	10000.
+
+# --------------------------
+# Astrometry error treatment
+# --------------------------
+
+# Default cone search radius for source from supplied position (arcseconds)
+# Closest object selected - wide cone picks up poor astrometry of names, narrow for security
+# 0.5 arcsec is just below minimum separation of Gaia sources
+GaiaCone	1.0
+
+# Position error multiplier
+# Increase the cross-matching cone radius (XMatchCone) parameter by this factor
+PosErrMult	1.
+
+# Increase search radius due to proper motion error?
+AddPMErr	1
+
+# Increase search radius due to proper motion from epoch error over <n> years
+EpochPMErrYears	1.
+
+# ---------------------------------------
+# Sources and treatment of ancillary data
+# ---------------------------------------
+
+# File containing ancillary information queries
+AncillaryFile	ancillary.ness
+
+# Ancillary weighting limit (see MinPhotError, PhotWeightingLimit, PhotSigmaLimit)
+MinAncError	0.1
+AncWeightingLimit	0.2
+AncSigmaLimit	3
+
+# -----------------------------
+# Use of save points and output
+# -----------------------------
+# Continue from previously processed data
+# UsePreviousRun 0 = start from the beginning
+#                1 = process previously downloaded photometry, but otherwise start afresh (start from get_sed_multiple->get_xmatches)
+#                2 = use previously created cross-matched pairs (start from get_sed_multiple->get_areaseds)
+#                3 = use previously created SEDs (start from get_sed_multiple->compile_areaseds)
+#                4 = use previously created SEDs (start from globalplots)
+#                5 = don't run main loop, use existing fits and just re-make initial and final plots
+#                6 = don't run main loop, use existing fits and just re-make final plots only
+UsePreviousRun	0
+
+# Command arguments file - used to check previously run source goes to correct file
+CmdArgsFile	../proc/last_cmd.npy
+
+# Master output file
+SaveMasterOutput	1
+MasterOutputFile	../output/output.dat
+
+# Area searches: maximum number of objects to save individual files
+MaxIndividualSaves	999
+
+# Single-source data storage
+SavePhot	1
+PhotFile	../proc/phot_data.npy
+# Area search data storage
+PhotTempDir	../proc/phot/
+AncTempDir	../proc/anc/
+
+# Save cross-matches for area searches
+SavePhotXMatch	1
+PhotXMatchDataFile	../proc/phot/matchdata.tsv
+PhotXMatchCountsFile	../proc/phot/matchdatacounts.tsv
+AncXMatchDataFile	../proc/anc/matchdata.tsv
+AncXMatchCountsFile	../proc/anc/matchdatacounts.tsv
+
+# Use/save SED data from/to file *for reload*?
+SaveSEDs	1
+SEDsFile	../proc/phot/sed_data.npy
+AncFile	../proc/phot/anc_data.npy
+AreaSEDsFile	../proc/phot/seds.tsv
+AreaWeightsFile	../proc/phot/weights.tsv
+AreaAncsFile	../proc/anc/seds.tsv
+AreaAncWeightsFile	../proc/anc/weights.tsv
+AreaCompiledSEDsFile	../proc/phot/seds.npy
+AreaCompiledAncFile	../proc/anc/anc.npy
+AreaCompiledSourceFile	../proc/sources.dat
+
+# Save SED/ancillary data for each individual target from/to file *as output*?
+# 0 = don't save; 1 = save only fitted; 2 = save all
+SaveEachSED	1
+SaveEachAnc	1
+SEDsDir	../output/sed/
+AncDir	../output/anc/
+
+# Output files for stellar parameters and ancillary data
+OutputParamFile	../output/hrd.dat
+OutputAncFile	../output/anc.dat
+# Append 0 = write new file, 1 = append existing,
+#        2 = continue existing list (useful for continuing after crashes)
+# !!! Known bug: May throw errors or overwrite results in some circumstances !!!
+OutputAppend	0
+
+# ----------------
+# Plotting options
+# ----------------
+# Output individual SED(s) to plot(s) in directory PlotDir?
+# (can represent a significant amount of per-source time)
+# 0 = no plot; 1 = plot only fitted; 2 = plot all
+PlotSEDs	1
+ShowAstrometryInset	0
+PlotDir	../output/png/
+# Limit lower limit in flux to this factor fainter than maximum
+MaxSEDPlotFluxRange	1.e4
+
+# Output plot controls for pre-fitting area searches
+MakeAreaPlots	1
+# Choose individual plots and destinations
+MakePointPlot	1
+PointPlotFile	../output/pointphot.png
+MakeClosestPlot	1
+ClosestPlotFile	../output/closest.png
+MakeOffsetPlot	1
+OffsetPlotFile	../output/offset.png
+MakePMPlot	1
+PMPlotFile	../output/pm.png
+# Percentile at which to clip proper motion plot to remove outliers
+PMPlotClipping	99
+MakeMatchSkyPlot	1
+MatchSkyPlotFile	../output/matchsky.png
+
+# Output plot controls for post-fitting area searches
+MakeHRDPlot	1
+HRDPlotFile	../output/hrd.png
+# Minimum/maximum plottable temp./luminosity on H-R diagram
+# (avoids problems with dist<0, NaN, inf, etc.)
+HRDMinTemp	1000.
+HRDMaxTemp	20000.
+HRDMinLum	0.00001
+HRDMaxLum	1000000.
+
+MakeXSPlots	1
+LumXSPlotFile	../output/xs-lum.png
+XSSpacePlotFile	../output/xs-space.png
+XSCorrnPlotFile	../output/xs-correlation.png
+# Excess plotting range (e.g. 2 = 1/2 to 2)
+LumXSPlotXSRange	1.5
+# Minimum number of points for plotting on luminosity-excess corner plot
+LumXSPlotMinPoints	50
+
+# -------------------------------------------------------------------
+# Fitting parameters for "simple" and "fit" stellar atmosphere models
+# -------------------------------------------------------------------
+
+# OUTLIER REJECTION
+# Maximum number of points to iteratively remove to improve fit (can be zero)
+MaxOutliers	10
+# Maximum number of outliers to test simultaneously without rejecting any
+MaxSeqOutliers	5
+# Minimum number of points in SED to try outlier rejection
+MinOutliers	5
+# Maximum fraction of outliers in SED to try outlier rejection
+MaxFracOutliers 0.5
+# Minimum factor to classify outliers (e.g. "2" tests points <0.5 or >2 times the model flux)
+# (only if improvement is better than OutlierChiSqMin)
+OutlierTolerance	1.25
+# Minimum factor improvement in reduced chi^2 to justify removing a point
+# (cumulative reduction for sequential points)
+OutlierChiSqMin	2.
+
+# FITTING LIMITS: Minimum and maximum wavelengths to fit (microns)
+# Change these to avoid regions too prone to UV dust absorption or IR dust emission
+MinLambda	0.1
+MaxLambda	20.
+# A sliding scale only fits points around the blackbody peak (where the star is brightest)
+# This improves fits for hot/cold stars if Min/MaxLambda is widened,
+# but can lead to larger errors if UV/IR photometry is unreliable.
+# Weights are assigned as: weight = 1/exp([log10(lambda)-log10(0.002898 m K/ T_eff)]^2/sigma^2)^power
+UseWeightedTFit	1
+WeightedTSigma	1.
+WeightedTPower	2.
+# Minimum number of datapoints before attempting at fit SED (must be >=2)
+MinDataPoints	2
+
+# MODIFIED WEIGHTS
+# Weight by uncertainties? If true, use photometric errors as weights. If false, weights are unity.
+WeightByErrors	1
+# Set a minimum weight, useful for photometric surveys with unphysically small errors.
+# weight = WeightOffset^2/((flux/error)^2+WeightOffset^2)
+# Works in combination with UseWeightedTFit. Requires WeightByErrors=1.
+# WeightOffset <= 0 will cause errors
+WeightOffset	0.05
+
+# MODEL ATMOSPHERE LIMITS: Stellar model atmosphere package to use
+# Requires src/model-<ModelCode>.dat, generated by makemodel.py
+# WARNING! Recreating pre-computed model grids takes a long time.
+# I mean a really long time... like a few days.
+# Edit this section with care.
+# New models and new filters can be introduced using makemodel.py, e.g.:
+# > python3 makemodel.py bt-settl
+# > python3 pyssed.py single "Betelgeuse" simple
+ModelCode	bt-settl
+# If the following limits are changed then the grid needs recomputed 
+RecomputeModelGrid	0
+# Restrict models to those between these temperatures, log(g), [Fe/H] and [alpha/Fe]
+# This can improve speed
+#ModelTeffLo	1899.
+#ModelTeffHi	5001.
+#ModelLoggLo	-9.99
+#ModelLoggHi	3.01
+#ModelFeHLo	-0.51
+#ModelFeHHi	0.51
+#ModelAFeLo	-9.99
+#ModelAFeHi	0.21
+
+ModelTeffLo	1899.
+ModelTeffHi	999999.
+ModelLoggLo	-9.99
+ModelLoggHi	9.99
+ModelFeHLo	-9.99
+ModelFeHHi	9.99
+ModelAFeLo	-9.99
+ModelAFeHi	0.41
+
+#ModelTeffLo	1899.
+#ModelTeffHi	5999.
+#ModelLoggLo	-9.99
+#ModelLoggHi	9.99
+#ModelFeHLo	-0.99
+#ModelFeHHi	9.99
+#ModelAFeLo	-9.99
+#ModelAFeHi	0.41
+
+# Starting/default guess for parameters - can help optimise speed
+# Use Gaia model as a starting point, if it exists?
+UseGaiaModelStart	1
+# ...otherwise:
+ModelStartTeff	3000.
+ModelStartLogg	-0.2
+ModelStartFeH	0.0
+ModelStartAFe	0.0
+
+# Parameter revisions used in simple model fitting
+# Estimate log(g) based on an initial BB fit?
+PrecomputeLogg	1
+# Revise log(g) during outlier rejection and in final fit? (Advised if Logg!~ModelStartLogg)
+IterateLogg	1
+# Default mass to assume for fitting
+DefaultMass	1.0
+# Use L propto M^3.5 to estimate mass if on main sequence (requires IterateLogg)
+UseMSMass	1
+
+# Estimate metallicity from Galactic scale height
+# (uses [Fe/H] = -tan(z[kpc], [alpha/Fe] = -0.2 [Fe/H])
+# (based on approximate fit to SDSS-II 2008ApJ...684..287I)
+FeHfromZ	1
+
+# ---------------------
+# Extinction parameters
+# ---------------------
+
+# For the moment, de-extinction is calculated on a point wavelength (i.e. not colour-corrected)
+DefaultEBV	0.0
+DefaultRV	3.1
+
+# Extinction map
+# None = use DefaultEBV
+# Gontcharov2017 = use Gontcharov et al. (2017)
+# GTomo = use Gaia DR3 map from EXPLORE G-Tomo (area searches return central point)
+ExtMap	GTomo
+
+# Maximum angular distance allowed before extracting new extinction line-of-sight (degrees)
+ExtMaxAngle	0.05

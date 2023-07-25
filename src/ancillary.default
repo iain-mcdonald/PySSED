@@ -2,9 +2,11 @@
 # Server = server from which to get data (Gaia/Vizier/File*)
 # Name = internal name for catalogue (catalogues.default)
 # TableID = Server's name for table or filename
+# ObjID = Server's name for object identification column (or column header in file)
 # ColumnID = Server's name for column (or column header in file)
 # UncertaintyID = Server's name for column (or column header in file) of the uncertainty [**]
 # ParameterID = Parameter represented by column**
+# Units = text describing units
 # Multiplier = multiplicative conversion factor to get standard units [***]
 # Epoch = year of observation for PM correction
 # BeamSize = radius of PSF in arcsec (minimum ability to separate sources, used to mark blending) (")
@@ -13,10 +15,12 @@
 # * File should be tab-separated and contain the column headings "RA" and "Dec"
 # ** Slashes (/) in parameters can be used to denote upper/lower limits using two parameters
 #			However, note that these will be merged into a single error by the programme
+#			Error can also be None if no error is available, or a fixed positive numerical value
 # *** Special parameters:
 #			RA, Dec (extracted from input catalogue)
 #			PMRA, PMDec (extracted from input catalogue, additional parameters can be given)
 #			Parallax [mas] <-> Distance [pc] (used interchangeably)
+#			Teff/logg/[Fe/H] can be used as a starting point or prior for fitting
 # **** Priority rules:
 #		- Values with a lower number will be treated with higher priority
 #			- ...unless they have fractional errors exceeding AncWeightingLimit [in setup]
@@ -27,32 +31,19 @@
 #				- (merging only occurs within AncSigmaLimit times the error budget)
 #			- ...otherwise, the first one will be chosen.
 #
-# DISTANCE ESTIMATORS
+# REQUIRED UNITS
 # Parameter = Parallax, units = mas
 # Parameter = Distance, units = pc
-# Server	Name	TableID	ColumnID	UncertaintyID	ParameterID	Multiplier	Epoch	BeamSize	XMatchCone	Priority
-Vizier	Gaia	I/350/gaiaedr3	Plx	e_Plx	Parallax	1.	2016.0	1.0	0.3	10
-Vizier	BailerJones	I/352/gedr3dis	rgeo	B_rgeo/b_rgeo	Distance	1.	2016.0	1.0	0.3	9
-Vizier	Hipparcos	I/311/hip2	Plx	e_Plx	Parallax	1.	1991.25	1.0	1.0	9
+# {arameter = Tspec, units = K
 #
-# PULSATION INFORMATION
-# Parameter = Period, units = days
-# Parameter = MaxMag/MinMag, units = mag
-# Parameter = Amplitude, units = mag
-Vizier	GCVS	B/gcvs/gcvs_cat	Period	None	Period	1.	2000.0	1.0	1.0	9
-Vizier	GCVS	B/gcvs/gcvs_cat	VarType	None	VarType	1.	2000.0	1.0	1.0	9
-Vizier	GCVS	B/gcvs/gcvs_cat	SpType	None	SpType	1.	2000.0	1.0	1.0	9
-Vizier	VSX	B/vsx/vsx	Period	None	Period	1.	2000.0	1.0	1.0	9
-Vizier	VSX	B/vsx/vsx	Type	None	VarType	1.	2000.0	1.0	1.0	9
-Vizier	VSX	B/vsx/vsx	max	None	MaxMag	1.	2000.0	1.0	1.0	9
-Vizier	VSX	B/vsx/vsx	min	None	MinMag	1.	2000.0	1.0	1.0	9
-Vizier	Tabur	J/MNRAS/400/1945/table3	Per1	None	Period	1.	2000.0	1.0	1.0	10
-Vizier	Tabur	J/MNRAS/400/1945/table3	Per2	None	Period	1.	2000.0	1.0	1.0	11
-Vizier	Tabur	J/MNRAS/400/1945/table3	Per3	None	Period	1.	2000.0	1.0	1.0	12
-Vizier	Tabur	J/MNRAS/400/1945/table3	Per4	None	Period	1.	2000.0	1.0	1.0	13
-Vizier	ASAS-SN	II/366/catalog	Per	None	Period	1.	2000.0	1.0	1.0	9
-Vizier	ASAS-SN	II/366/catalog	Amp	None	Amplitude	1.	2000.0	1.0	1.0	9
-#
-# SPECTRAL INFORMATION
-# Parameter = SpType, units = None
-Vizier	Tabur	J/MNRAS/400/1945/table3	SpType	None	SpType	1.	2000.0	1.0	1.0	9
+# Server	Name	TableID	ObjID	ColumnID	UncertaintyID	ParameterID	Units	Multiplier	Epoch	BeamSize	XMatchCone	Priority
+Vizier	Gaia	I/355/gaiadr3	Source	Plx	e_Plx	Parallax	mas	1.	2016.0	1.0	0.3	10
+Vizier	Hipparcos	I/311/hip2	HIP	Plx	e_Plx	Parallax	mas	1.	1991.25	1.0	1.0	9
+#Vizier	BailerJones	I/352/gedr3dis	Source	rgeo	B_rgeo/b_rgeo	Distance	pc	1.	2016.0	1.0	0.3	9
+Vizier	GaiaApsis	I/355/paramp	Source	Teff	500.	Tspec	K	1.	2016.5	1.0	1.0	9
+Vizier	GaiaApsis	I/355/paramp	Source	logg	1.0	logg	dex	1.	2016.5	1.0	1.0	9
+Vizier	GaiaApsis	I/355/paramp	Source	__Fe_H_	0.5	FeH	dex	1.	2016.5	1.0	1.0	9
+#Vizier	Ammons2006	V/136/tycall	None	Dist	E_Dist	Distance	pc	1.	2000.0	1.0	0.3	12
+#Vizier	Zari2021	J/A+A/650/A112/target	None	d50kin	d84kin/d16kin	Distance	pc	1000.	2000.0	1.0	0.3	12
+Vizier	Gaia	I/355/gaiadr3	Source	RUWE	None	RUWE	None	1.	2016.0	1.0	0.3	10
+Vizier	Gaia	I/355/gaiadr3	Source	E_BP_RP_	None	E_BP_RP	None	1.	2016.0	1.0	0.3	10

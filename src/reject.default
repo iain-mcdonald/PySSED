@@ -60,6 +60,51 @@ WISE	W3mag	W3mag	-1	<	-1.5	Mask	Same	Same
 WISE	W4mag	W4mag	-1	<	-2.3	Mask	Same	Same
 WISE	W4mag	W4mag	-1	>	6.5	Mask	Same	Same
 
+# Flag SDSS.u, Skymapper.u and .v regardless
+#SDSS	umag	umag	-1	>	-9999	Mask	Same	Same
+#Skymapper	uPSF	uPSF	-1	>	-9999	Mask	Same	Same
+#Skymapper	vPSF	vPSF	-1	>	-9999	Mask	Same	Same
+
+# Removing VHS magnitudes where they exceed the non-linearity limit
+VHS	Jap3	Jap3	-1	<	13.2	Mask	Same	Same
+VHS	Hap3	Hap3	-1	<	13.0	Mask	Same	Same
+VHS	Ksap3	Ksap3	-1	<	12.8	Mask	Same	Same
+VVV	Jmag3	Jmag3	-1	<	13.2	Mask	Same	Same
+VVV	Hmag3	Hmag3	-1	<	13.0	Mask	Same	Same
+VVV	Ksmag3	Ksmag3	-1	<	12.8	Mask	Same	Same
+
+# Remove zero (null) values from Morel
+Morel78	U	U	-1	=	--	Remove	Same	Same
+Morel78	B	B	-1	=	--	Remove	Same	Same
+Morel78	V	V	-1	=	--	Remove	Same	Same
+Morel78	R	R	-1	=	--	Remove	Same	Same
+Morel78	I	I	-1	=	--	Remove	Same	Same
+Morel78	J	J	-1	=	--	Remove	Same	Same
+Morel78	H	H	-1	=	--	Remove	Same	Same
+Morel78	K	K	-1	=	--	Remove	Same	Same
+Morel78	L	L	-1	=	--	Remove	Same	Same
+Morel78	M	M	-1	=	--	Remove	Same	Same
+Morel78	N	N	-1	=	--	Remove	Same	Same
+
+# Mask low-quality MSX data
+MSX	B1	q_B1	-1	<	2	Mask	Same	Same
+MSX	B2	q_B2	-1	<	2	Mask	Same	Same
+MSX	A	q_A	-1	<	2	Mask	Same	Same
+MSX	C	q_C	-1	<	2	Mask	Same	Same
+MSX	D	q_D	-1	<	2	Mask	Same	Same
+MSX	E	q_E	-1	<	2	Mask	Same	Same
+
+# Mask bad IPHAS sources
+IPHAS	r	brightNeighb	-1	=	1	Mask	Same	Same
+IPHAS	r	deblend	-1	=	1	Mask	Same	Same
+IPHAS	r	saturated	-1	=	1	Mask	Same	Same
+IPHAS	i	brightNeighb	-1	=	1	Mask	Same	Same
+IPHAS	i	deblend	-1	=	1	Mask	Same	Same
+IPHAS	i	saturated	-1	=	1	Mask	Same	Same
+IPHAS	ha	brightNeighb	-1	=	1	Mask	Same	Same
+IPHAS	ha	deblend	-1	=	1	Mask	Same	Same
+IPHAS	ha	saturated	-1	=	1	Mask	Same	Same
+
 # """
 # Inter-survey rejection based on comparative magnitudes
 # e.g.: VHS	Jap3	mag	-1	d<	-1.0	Mask	2MASS	Jmag
@@ -145,3 +190,18 @@ Morel78	V	mag	-1	D>	2.0	Mask	Hipparcos	Hpmag
 Morel78	V	mag	-1	D>	2.0	Mask	Hipparcos	Hpmag
 
 #Tabur	Per1	anc	-1	F>	1.1	Mask	VSX	Period
+
+# For WISE 1 & 2, use catWISE and unWISE in preference to AllWISE
+# Use catWISE for W1 & W2 > 5, and unWISE for W1 & W2 < 5
+# Now set in input file
+WISE	W1mag	mag	-1	>	5	Mask	catWISE	W1mproPM
+WISE	W2mag	mag	-1	>	5	Mask	catWISE	W2mproPM
+WISE	W1mag	flux	-1	>	1.e7	Mask	unWISE	FW1
+WISE	W2mag	flux	-1	>	1.e7	Mask	unWISE	FW2
+catWISE	W1mproPM	flux	-1	>	1.e7	Remove	unWISE	FW1
+catWISE	W2mproPM	flux	-1	>	1.e7	Remove	unWISE	FW2
+unWISE	FW1	mag	-1	>	5	Remove	catWISE	W1mproPM
+unWISE	FW2	mag	-1	>	5	Remove	catWISE	W2mproPM
+
+# e.g.: VHS	Jap3	mag	-1	d<	-1.0	Mask	2MASS	Jmag
+# will reject VHS J-band data if it is more than 1.0 mag fainter than 2MASS J.
