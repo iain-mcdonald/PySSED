@@ -1,0 +1,5 @@
+*.pyc
+**/*pyc
+**/*pycache*
+.temp/
+_data/

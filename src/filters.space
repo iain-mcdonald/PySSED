@@ -1,0 +1,125 @@
+# List of filters
+# Note: don't change the Gaia CDSLabel in the Gaia filters!
+# CatName = Internal catalogue name as defined in catalogue list
+# CDSLabel = Label for filter in CDS table
+# CDSError = Error for filter in CDS table (or None)
+# SVOName = SVO filter name
+# DataType = Flux (nJy/uJy/mJy/Jy/nMgy) or magnitude (mag)
+# DataRef = when using magnitudes: Vega or AB
+# ErrType = type of error (Same, None, Perc [percent])
+# MinData = Faint accepted magnitude / bright accepted flux (for flagging saturation / non-linearity)
+# MaxData = Bright accepted magnitude / faint accepted flux (for removing noisy data)
+# MaxPErr = maximum allowed percentage error (in flux)
+# ZptCorr = Zero-point magnitude correction (mag)
+# CatName	CDSLabel	CDSError	SVOName	DataType	DataRef	ErrType	MinData	MaxData	MaxPErr	ZptCorr
+Gaia	BPmag	e_BPmag	GAIA/GAIA3.Gbp	mag	Vega	Same	-99	99	10.	0.
+Gaia	Gmag	e_Gmag	GAIA/GAIA3.G	mag	Vega	Same	-99	99	10.	0.
+Gaia	RPmag	e_RPmag	GAIA/GAIA3.Grp	mag	Vega	Same	-99	99	10.	0.
+Hipparcos	Hpmag	e_Hpmag	Hipparcos/Hipparcos.Hp_MvB	mag	Vega	Same	-99	99	10.	0.
+Tycho	BTmag	e_BTmag	TYCHO/TYCHO.B_MvB	mag	Vega	Same	-99	99	10.	0.
+Tycho	VTmag	e_VTmag	TYCHO/TYCHO.V_MvB	mag	Vega	Same	-99	99	10.	0.
+PanStarrs	gmag	e_gmag	PAN-STARRS/PS1.g	mag	AB	Same	-99	99	10.	0.
+PanStarrs	rmag	e_rmag	PAN-STARRS/PS1.r	mag	AB	Same	-99	99	10.	0.
+PanStarrs	imag	e_imag	PAN-STARRS/PS1.i	mag	AB	Same	-99	99	10.	0.
+PanStarrs	zmag	e_zmag	PAN-STARRS/PS1.z	mag	AB	Same	-99	99	10.	0.
+PanStarrs	ymag	e_ymag	PAN-STARRS/PS1.y	mag	AB	Same	-99	99	10.	0.
+SDSS7	umag	e_umag	SLOAN/SDSS.u	mag	AB	Same	-99	99	10.	0.
+SDSS7	gmag	e_gmag	SLOAN/SDSS.g	mag	AB	Same	-99	99	10.	0.
+SDSS7	rmag	e_rmag	SLOAN/SDSS.r	mag	AB	Same	-99	99	10.	0.
+SDSS7	imag	e_imag	SLOAN/SDSS.i	mag	AB	Same	-99	99	10.	0.
+SDSS7	zmag	e_zmag	SLOAN/SDSS.z	mag	AB	Same	-99	99	10.	0.
+Skymapper	uPSF	e_uPSF	Skymapper/Skymapper.u	mag	AB	Same	-99	99	10.	0.
+Skymapper	vPSF	e_vPSF	Skymapper/Skymapper.v	mag	AB	Same	-99	99	10.	0.
+Skymapper	gPSF	e_gPSF	Skymapper/Skymapper.g	mag	AB	Same	-99	99	10.	0.
+Skymapper	rPSF	e_rPSF	Skymapper/Skymapper.r	mag	AB	Same	-99	99	10.	0.
+Skymapper	iPSF	e_iPSF	Skymapper/Skymapper.i	mag	AB	Same	-99	99	10.	0.
+Skymapper	zPSF	e_zPSF	Skymapper/Skymapper.z	mag	AB	Same	-99	99	10.	0.
+GALEX	FUVmag	e_FUVmag	GALEX/GALEX.FUV	mag	AB	Same	-99	99	20.	0
+GALEX	NUVmag	e_NUVmag	GALEX/GALEX.NUV	mag	AB	Same	-99	99	10.	0
+Morel78	U	None	Generic/Johnson_UBVRIJHKL.U	mag	Vega	None	-99	99	10.	0.
+Morel78	B	None	Generic/Johnson_UBVRIJHKL.B	mag	Vega	None	-99	99	10.	0.
+Morel78	V	None	Generic/Johnson_UBVRIJHKL.V	mag	Vega	None	-99	99	10.	0.
+Morel78	R	None	Generic/Johnson_UBVRIJHKL.R	mag	Vega	None	-99	99	10.	0.
+Morel78	I	None	Generic/Johnson_UBVRIJHKL.I	mag	Vega	None	-99	99	10.	0.
+Morel78	J	None	Generic/Johnson_UBVRIJHKL.J	mag	Vega	None	-99	99	20.	0.
+Morel78	H	None	Generic/Johnson_UBVRIJHKL.H	mag	Vega	None	-99	99	20.	0.
+Morel78	K	None	Generic/Johnson_UBVRIJHKL.K	mag	Vega	None	-99	99	20.	0.
+Morel78	L	None	Generic/Johnson_UBVRIJHKL.LI	mag	Vega	None	-99	99	25.	0.
+Morel78	M	None	Generic/Johnson_UBVRIJHKL.M	mag	Vega	None	-99	99	25.	0.
+Morel78	N	None	Generic/Johnson_UBVRIJHKL.N	mag	Vega	None	-99	99	25.	0.
+APASS	Bmag	e_Bmag	Generic/Johnson_UBVRIJHKL.B	mag	Vega	Same	-99	99	10.	0.
+APASS	Vmag	e_Vmag	Generic/Johnson_UBVRIJHKL.V	mag	Vega	Same	-99	99	10.	0.
+APASS	g_mag	e_g_mag	SLOAN/SDSS.g	mag	AB	Same	-99	99	10.	0.
+APASS	r_mag	e_r_mag	SLOAN/SDSS.r	mag	AB	Same	-99	99	10.	0.
+APASS	i_mag	e_i_mag	SLOAN/SDSS.i	mag	AB	Same	-99	99	10.	0.
+CMC15	r_mag	e_r_mag	SLOAN/SDSS.r	mag	AB	Same	17	9	10.	0.
+2MASS	Jmag	e_Jmag	2MASS/2MASS.J	mag	Vega	Same	-99	99	25.	0.
+2MASS	Hmag	e_Hmag	2MASS/2MASS.H	mag	Vega	Same	-99	99	25.	0.
+2MASS	Kmag	e_Kmag	2MASS/2MASS.Ks	mag	Vega	Same	-99	99	25.	0.
+DENIS	Imag	e_Imag	DENIS/DENIS.I	mag	Vega	Same	-99	99	10.	0.
+DENIS	Jmag	e_Jmag	DENIS/DENIS.J	mag	Vega	Same	-99	99	20.	0.
+DENIS	Kmag	e_Kmag	DENIS/DENIS.Ks	mag	Vega	Same	-99	99	20.	0.
+VVV	Zmag3	e_Zmag3	Paranal/VISTA.Z	mag	Vega	Same	-99	99	10.	0.
+VVV	Ymag3	e_Ymag3	Paranal/VISTA.Y	mag	Vega	Same	-99	99	20.	0.
+VVV	Jmag3	e_Jmag3	Paranal/VISTA.J	mag	Vega	Same	-99	99	20.	0.
+VVV	Hmag3	e_Hmag3	Paranal/VISTA.H	mag	Vega	Same	-99	99	20.	0.
+VVV	Ksmag3	e_Ksmag3	Paranal/VISTA.Ks	mag	Vega	Same	-99	99	10.	0.
+VHS	Yap3	e_Yap3	Paranal/VISTA.Y	mag	Vega	Same	-99	99	10.	0.
+VHS	Jap3	e_Jap3	Paranal/VISTA.J	mag	Vega	Same	-99	99	20.	0.
+VHS	Hap3	e_Hap3	Paranal/VISTA.H	mag	Vega	Same	-99	99	20.	0.
+VHS	Ksap3	e_Ksap3	Paranal/VISTA.Ks	mag	Vega	Same	-99	99	20.	0.
+WISE	W1mag	e_W1mag	WISE/WISE.W1	mag	Vega	Same	-99	99	25.	0.
+WISE	W2mag	e_W2mag	WISE/WISE.W2	mag	Vega	Same	-99	99	25.	0.
+WISE	W3mag	e_W3mag	WISE/WISE.W3	mag	Vega	Same	-99	99	25.	0.
+WISE	W4mag	e_W4mag	WISE/WISE.W4	mag	Vega	Same	-99	99	25.	0.
+catWISE	W1mproPM	e_W1mproPM	WISE/WISE.W1	mag	Vega	Same	-99	5	25.	0.
+catWISE	W2mproPM	e_W2mproPM	WISE/WISE.W2	mag	Vega	Same	-99	5	25.	0.
+unWISE	FW1	e_FW1	WISE/WISE.W1	nMgy	Vega	Same	1e7	9e99	25.	0.
+unWISE	FW2	e_FW2	WISE/WISE.W2	nMgy	Vega	Same	1e7	9e99	25.	0.
+Akari	S09	e_S09	AKARI/IRC.S9W	Jy	Vega	Same	0.	999999	25.	0.
+Akari	S18	e_S18	AKARI/IRC.L18W	Jy	Vega	Same	0.	999999	25.	0.
+AkariFIS	S65	e_S65	AKARI/FIS.N60	Jy	Vega	Same	0.	999999	33.	0.
+AkariFIS	S90	e_S90	AKARI/FIS.WIDE-S	Jy	Vega	Same	0.	999999	33.	0.
+AkariFIS	S140	e_S140	AKARI/FIS.WIDE-L	Jy	Vega	Same	0.	999999	33.	0.
+AkariFIS	S160	e_S160	AKARI/FIS.N160	Jy	Vega	Same	0.	999999	33.	0.
+MSX	B1	e_B1	MSX/MSX.B1	Jy	Vega	Perc	0.	999999	33.	0.
+MSX	B2	e_B2	MSX/MSX.B2	Jy	Vega	Perc	0.	999999	33.	0.
+MSX	A	e_A	MSX/MSX.A	Jy	Vega	Perc	0.	999999	33.	0.
+#MSX	C	e_A	MSX/MSX.C	Jy	Vega	Perc	0.	999999	33.	0.
+#MSX	D	e_A	MSX/MSX.D	Jy	Vega	Perc	0.	999999	33.	0.
+#MSX	E	e_A	MSX/MSX.E	Jy	Vega	Perc	0.	999999	33.	0.
+IRAS	Fnu_12	e_Fnu_12	IRAS/IRAS.12mu	Jy	Vega	Perc	0.	999999	25.	0.
+IRAS	Fnu_25	e_Fnu_25	IRAS/IRAS.25mu	Jy	Vega	Perc	0.	999999	25.	0.
+IRAS	Fnu_60	e_Fnu_60	IRAS/IRAS.60mu	Jy	Vega	Perc	0.	999999	30.	0.
+IRAS	Fnu_100	e_Fnu_100	IRAS/IRAS.100mu	Jy	Vega	Perc	0.	999999	30.	0.
+COBE	F1.25	e_F1.25	COBE/DIRBE.1p25m	Jy	Vega	Same	0.	999999	20.	0
+COBE	F2.2	e_F2.2	COBE/DIRBE.2p2m	Jy	Vega	Same	0.	999999	20.	0
+COBE	F3.5	e_F3.5	COBE/DIRBE.3p5m	Jy	Vega	Same	0.	999999	25.	0
+COBE	F4.9	e_F4.9	COBE/DIRBE.4p9m	Jy	Vega	Same	0.	999999	25.	0
+COBE	F12	e_F12	COBE/DIRBE.12m	Jy	Vega	Same	0.	999999	25.	0
+COBE	F25	e_F25	COBE/DIRBE.25m	Jy	Vega	Same	0.	999999	25.	0
+COBE	F60	e_F60	COBE/DIRBE.60m	Jy	Vega	Same	0.	999999	33.	0
+COBE	F100	e_F100	COBE/DIRBE.100m	Jy	Vega	Same	0.	999999	33.	0
+COBE	F140	e_F140	COBE/DIRBE.140m	Jy	Vega	Same	0.	999999	33.	0
+COBE	F240	e_F240	COBE/DIRBE.240m	Jy	Vega	Same	0.	999999	33.	0
+JCMT	F450	e_F450	JCMT/SCUBA2.450GHz	mJy	Vega	Same	0.	999999	33.	0
+JCMT	F850	e_F850	JCMT/SCUBA2.850GHz	mJy	Vega	Same	0.	999999	33.	0
+Herschel70	Flux	rms	Herschel/PACS.blue	mJy	Vega	Same	0.	999999	33.	0
+Herschel100	Flux	rms	Herschel/PACS.green	mJy	Vega	Same	0.	999999	33.	0
+Herschel160	Flux	rms	Herschel/PACS.red	mJy	Vega	Same	0.	999999	33.	0
+#Hirschauer	Jmag	e_Jmag	2MASS/2MASS.J	mag	Vega	Same	-99	99	25.	0.
+#Hirschauer	Hmag	e_Hmag	2MASS/2MASS.H	mag	Vega	Same	-99	99	25.	0.
+#Hirschauer	Kmag	e_Kmag	2MASS/2MASS.Ks	mag	Vega	Same	-99	99	25.	0.
+#Hirschauer	3.6mag	e_3.6mag	Spitzer/	mag	Vega	Same	-99	99	25.	0.
+#Hirschauer	4.5mag	e_4.5mag	Spitzer/	mag	Vega	Same	-99	99	25.	0.
+#Hirschauer	5.8mag	e_5.8mag	Spitzer/	mag	Vega	Same	-99	99	25.	0.
+#Hirschauer	8.0mag	e_8.0mag	Spitzer/	mag	Vega	Same	-99	99	25.	0.
+HSC	magAper2	None	HST/WFPC2-WF.F170W	mag	AB	Same	-99	-99	10.	0.
+HSC	magAper2	None	HST/WFPC2-WF.F255W	mag	AB	Same	-99	-99	10.	0.
+HSC	magAper2	None	HST/WFPC2-WF.F336W	mag	AB	Same	-99	-99	10.	0.
+HSC	magAper2	None	HST/WFPC2-WF.F439W	mag	AB	Same	-99	-99	10.	0.
+HSC	magAper2	None	HST/WFPC2-WF.F502N	mag	AB	Same	-99	-99	10.	0.
+HSC	magAper2	None	HST/WFPC2-WF.F555W	mag	AB	Same	-99	-99	10.	0.
+HSC	magAper2	None	HST/WFPC2-WF.F814W	mag	AB	Same	-99	-99	10.	0.
+MegaCam	magg	errg	SLOAN/SDSS.g	mag	AB	Same	-99	99	10.	0.
+MegaCam	magi	erri	SLOAN/SDSS.i	mag	AB	Same	-99	99	10.	0.
