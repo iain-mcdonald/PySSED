@@ -54,6 +54,7 @@ try:
     import matplotlib.pyplot as plt             # Required for plotting
     from matplotlib.colors import ListedColormap # Required for colour mapping
     from mpl_toolkits.axes_grid1.inset_locator import inset_axes # Reqd. for subplots
+    import csv                                  # Required for Visualiser output
     if (speedtest):
         print ("matplotlib:",datetime.now()-starttime,"s")
 
@@ -4499,6 +4500,33 @@ def excesscorrnplot(plotfile,compiledseds,compiledanc,teff):
 
     return
 
+# -----------------------------------------------------------------------------
+#converting master output to valid csv
+def convert_master_file(name):
+    file = open(name, "r")
+    data = list(csv.reader(file, delimiter="\t"))
+    file.close()
+    num_lines = 10
+    index = 2
+    header = []
+    while index < num_lines:
+        line = data[index]
+        idx = 0
+        while idx < len(line):
+            element = line[idx]
+            if len(header) > idx:
+                header_element = header[idx]
+                header_element += '|' + element
+                header[idx] = header_element
+            else:
+                header.append(element)
+            idx += 1
+        index += 1
+    res_data = data[10:]
+    result = pd.DataFrame(data=res_data, columns=header)
+    return result
+
+
 # =============================================================================
 # MAIN PROGRAMME
 # =============================================================================
@@ -4506,7 +4534,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
 
     # Main routine
     errmsg=""
-    version="0.3.20230725"
+    version="0.3.20230925"
     try:
         startmain = datetime.now() # time object
         globaltime=startmain
@@ -5037,7 +5065,9 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                     # Unless processing a single source, add entry to global output files
                     #if (cmdtype!="single"):
                     outparams=str(source)+sep+str(teff)+sep+str(lum)+sep+str(rad)+sep+str(chisq)+"\n"
-                    hrd_results = hrd_results.append({ "Object": source, "Teff": str(teff), "Lum": str(lum), "Rad": str(rad), "Chi^2": str(chisq) }, ignore_index=True)
+                    added = pd.DataFrame(data=[[source, str(teff), str(lum), str(rad), str(chisq)]], columns=["Object", "Teff", "Lum", "Rad", "Chi^2"])
+                    hrd_results = pd.concat([hrd_results, added])
+                    #hrd_results = hrd_results.append({ "Object": source, "Teff": str(teff), "Lum": str(lum), "Rad": str(rad), "Chi^2": str(chisq) }, ignore_index=True)
                     with open(outparamfile, "a") as f:
                         f.write(outparams)
                     #outanc=str(source)+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='RA') & (ancillary['mask']==True)]['value']))+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='RA') & (ancillary['mask']==True)]['err']))+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='Dec') & (ancillary['mask']==True)]['value']))+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='Dec') & (ancillary['mask']==True)]['err']))
@@ -5136,10 +5166,21 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
             saveeachanc=int(pyssedsetupdata[pyssedsetupdata[:,0]=="SaveEachAnc",1])
             ancdir=np.array2string(pyssedsetupdata[pyssedsetupdata[:,0]=="AncDir",1])[2:-2]
             if (((saveeachanc>1) or ((saveeachanc==1) and (fitsuccess==1))) and (nobjects<maxnobjects) and (ancillary.size>0)): #and (usepreviousrun>=3 or searchtype=="area")):
+                # When running Visualiser, add "Object" to each row of .anc
+                if (handler != None):
+                    obj_col = np.full(len(ancillary), source, dtype="U100")
+                    ancillary2 = rfn.append_fields(ancillary, "Object", obj_col)
                 ancfile=ancdir+source.replace(" ","_")+".anc"
                 if (verbosity>=60):
                     print ("Saving ancillary data to",ancfile)
-                np.savetxt(ancfile, ancillary, fmt="%s", delimiter=sep, header=sep.join(ancillary.dtype.names))
+                if (handler != None): # Visualiser
+                    np.savetxt(ancfile, ancillary, fmt="%s", delimiter=sep, header=sep.join(ancillary2.dtype.names))
+                    obj_pd = pd.DataFrame(data=obj_col, columns=["Object"])
+                    anc_pd = pd.DataFrame(data=ancillary, columns=ancillary.dtype.names)
+                    out_anc_pd = pd.concat([anc_pd, obj_pd], axis=1)
+                    results[source.replace(" ","_")+".anc"]=out_anc_pd
+                else: # not Visualiser
+                    np.savetxt(ancfile, ancillary, fmt="%s", delimiter=sep, header=sep.join(ancillary.dtype.names))
 
             # Plot the SED if desired and save to file
             plotseds=int(pyssedsetupdata[pyssedsetupdata[:,0]=="PlotSEDs",1])
@@ -5167,9 +5208,9 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                         plot_obj = pd.DataFrame(data=np.full(len(plot), source, dtype="U100"), columns=["Object"])
                         inset_obj = pd.DataFrame(data=np.full(len(inset_plot), source, dtype="U100"), columns=["Object"])
                         plot = pd.concat([plot, plot_obj], axis=1)
-                        inset_plot = pd.concet([inset_plot, inset_obj], axis=1)
-                        plot.to.csv(f"../output/{source.replace(' ', '_')}_Plot.csv", index=False)
-                        inset_plot.to.csv(f"../output/{source.replace(' ', '_')}_Plot.csv", index=False)
+                        inset_plot = pd.concat([inset_plot, inset_obj], axis=1)
+                        plot.to_csv(f"../output/{source.replace(' ', '_')}_Plot.csv", index=False)
+                        inset_plot.to_csv(f"../output/{source.replace(' ', '_')}_Plot.csv", index=False)
                         results[f"{source.replace(' ', '_')}_Plot.csv"] = plot
                         results[f"{source.replace(' ', '_')}_Inset_Plot.csv"] = inset_plot
 
@@ -5297,6 +5338,8 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
     if (hrd_results.shape[0] > 0):
         results["hrd.dat"] = hrd_results
     if (handler != None):
+        mastercsv = convert_master_file(outmasterfile)
+        results["masteroutput.csv"] = mastercsv
         return results
 
     return errmsg
