@@ -1,0 +1,9 @@
+astropy
+astroquery
+dust_extinction
+matplotlib
+numpy
+pandas
+scipy
+wget
+h5py

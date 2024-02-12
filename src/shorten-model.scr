@@ -1,0 +1,19 @@
+mv model-bt-settl-recast.dat model-bt-settl-recast-full.dat
+awk 'NR==1 {print} NR>1 && $4<0.3 && $3>=-2 && $2<=6 {for (i=1;i<=NF;i++) if (length($i)>9) $i=sprintf("%.3e",$i+0); print}' model-bt-settl-recast-full.dat | sed 's/e+/e/g' > model-bt-settl-recast.dat
+awk 'NR==1 {for (i=1;i<=NF;i++) {n=0; for (j=1;j<i;j++) if ($i==$j) n++; a[i]=n}} {for (i=1;i<=NF;i++) if (a[i]==0) {if ($i=="0.0") {printf "0. "} else {printf "%s ",$i}}; printf "\n"}' model-bt-settl-recast.dat > foo; sed 's/#//' foo > model-bt-settl-recast.dat
+
+mv alambda-bt-settl-lo-recast.dat alambda-bt-settl-lo-recast-full.dat
+awk 'NR==1 {print} NR>1 && $4<0.3 && $3>=-2 && $2<=6 {for (i=1;i<=NF;i++) if (length($i)>9) $i=sprintf("%.3e",$i+0); print}' alambda-bt-settl-lo-recast-full.dat | sed 's/e+/e/g' > alambda-bt-settl-lo-recast.dat
+awk 'NR==1 {for (i=1;i<=NF;i++) {n=0; for (j=1;j<i;j++) if ($i==$j) n++; a[i]=n}} {for (i=1;i<=NF;i++) if (a[i]==0) {if ($i=="0.0") {printf "0. "} else {printf "%s ",$i}}; printf "\n"}' alambda-bt-settl-lo-recast.dat > foo; sed 's/#//' foo > alambda-bt-settl-lo-recast.dat
+
+mv alambda-bt-settl-med-recast.dat alambda-bt-settl-med-recast-full.dat
+awk 'NR==1 {print} NR>1 && $4<0.3 && $3>=-2 && $2<=6 {for (i=1;i<=NF;i++) if (length($i)>9) $i=sprintf("%.3e",$i+0); print}' alambda-bt-settl-med-recast-full.dat | sed 's/e+/e/g' > alambda-bt-settl-med-recast.dat
+awk 'NR==1 {for (i=1;i<=NF;i++) {n=0; for (j=1;j<i;j++) if ($i==$j) n++; a[i]=n}} {for (i=1;i<=NF;i++) if (a[i]==0) {if ($i=="0.0") {printf "0. "} else {printf "%s ",$i}}; printf "\n"}' alambda-bt-settl-med-recast.dat > foo; sed 's/#//' foo > alambda-bt-settl-med-recast.dat
+
+mv alambda-bt-settl-hi-recast.dat alambda-bt-settl-hi-recast-full.dat
+awk 'NR==1 {print} NR>1 && $4<0.3 && $3>=-2 && $2<=6 {for (i=1;i<=NF;i++) if (length($i)>9) $i=sprintf("%.3e",$i+0); print}' alambda-bt-settl-hi-recast-full.dat | sed 's/e+/e/g' > alambda-bt-settl-hi-recast.dat
+awk 'NR==1 {for (i=1;i<=NF;i++) {n=0; for (j=1;j<i;j++) if ($i==$j) n++; a[i]=n}} {for (i=1;i<=NF;i++) if (a[i]==0) {if ($i=="0.0") {printf "0. "} else {printf "%s ",$i}}; printf "\n"}' alambda-bt-settl-hi-recast.dat > foo; sed 's/#//' foo > alambda-bt-settl-hi-recast.dat
+
+mv alambda-bt-settl-vhi-recast.dat alambda-bt-settl-vhi-recast-full.dat
+awk 'NR==1 {print} NR>1 && $4<0.3 && $3>=-2 && $2<=6 {for (i=1;i<=NF;i++) if (length($i)>9) $i=sprintf("%.3e",$i+0); print}' alambda-bt-settl-vhi-recast-full.dat | sed 's/e+/e/g' > alambda-bt-settl-vhi-recast.dat
+awk 'NR==1 {for (i=1;i<=NF;i++) {n=0; for (j=1;j<i;j++) if ($i==$j) n++; a[i]=n}} {for (i=1;i<=NF;i++) if (a[i]==0) {if ($i=="0.0") {printf "0. "} else {printf "%s ",$i}}; printf "\n"}' alambda-bt-settl-vhi-recast.dat > foo; sed 's/#//' foo > alambda-bt-settl-vhi-recast.dat
