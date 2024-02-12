@@ -1,0 +1,70 @@
+explore_cube_density_values_050pc_v1.h5
+npasx=501,npasy=501,npasz=41
+pasx=20.000000 pc,pasy=20.000000 pc,pasz=20.000000 pc
+min_x=-5000.000000 pc,min_y=-5000.000000 pc,min_z=-400.000000 pc
+max_x=5000.000000 pc,max_y=5000.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_density_values_025pc_v1.h5
+npasx=601,npasy=601,npasz=81
+pasx=10.000000 pc,pasy=10.000000 pc,pasz=10.000000 pc
+min_x=-3000.000000 pc,min_y=-3000.000000 pc,min_z=-400.000000 pc
+max_x=3000.000000 pc,max_y=3000.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_density_errors_050pc_v1.h5
+npasx=501,npasy=501,npasz=41
+pasx=20.000000 pc,pasy=20.000000 pc,pasz=20.000000 pc
+min_x=-5000.000000 pc,min_y=-5000.000000 pc,min_z=-400.000000 pc
+max_x=5000.000000 pc,max_y=5000.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_extinct_errors_050pc_v1.h5
+npasx=501,npasy=501,npasz=41
+pasx=20.000000 pc,pasy=20.000000 pc,pasz=20.000000 pc
+min_x=-5000.000000 pc,min_y=-5000.000000 pc,min_z=-400.000000 pc
+max_x=5000.000000 pc,max_y=5000.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_density_values_050pc_v2.h5
+npasx=501,npasy=501,npasz=41
+pasx=20.000000 pc,pasy=20.000000 pc,pasz=20.000000 pc
+min_x=-5000.000000 pc,min_y=-5000.000000 pc,min_z=-400.000000 pc
+max_x=5000.000000 pc,max_y=5000.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_density_values_025pc_v2.h5
+npasx=601,npasy=601,npasz=81
+pasx=10.000000 pc,pasy=10.000000 pc,pasz=10.000000 pc
+min_x=-3000.000000 pc,min_y=-3000.000000 pc,min_z=-400.000000 pc
+max_x=3000.000000 pc,max_y=3000.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_density_values_010pc_v2.h5
+npasx=601,npasy=601,npasz=161
+pasx=5.000000 pc,pasy=5.000000 pc,pasz=5.000000 pc
+min_x=-1500.000000 pc,min_y=-1500.000000 pc,min_z=-400.000000 pc
+max_x=1500.000000 pc,max_y=1500.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_density_values_005pc_v2.h5
+npasx=641,npasy=641,npasz=321
+pasx=2.500000 pc,pasy=2.500000 pc,pasz=2.500000 pc
+min_x=-800.000000 pc,min_y=-800.000000 pc,min_z=-400.000000 pc
+max_x=800.000000 pc,max_y=800.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_density_errors_050pc_v2.h5
+npasx=501,npasy=501,npasz=41
+pasx=20.000000 pc,pasy=20.000000 pc,pasz=20.000000 pc
+min_x=-5000.000000 pc,min_y=-5000.000000 pc,min_z=-400.000000 pc
+max_x=5000.000000 pc,max_y=5000.000000 pc,max_z=400.000000 pc
+
+
+explore_cube_extinct_errors_050pc_v2.h5
+npasx=501,npasy=501,npasz=41
+pasx=20.000000 pc,pasy=20.000000 pc,pasz=20.000000 pc
+min_x=-5000.000000 pc,min_y=-5000.000000 pc,min_z=-400.000000 pc
+max_x=5000.000000 pc,max_y=5000.000000 pc,max_z=400.000000 pc
+
+
