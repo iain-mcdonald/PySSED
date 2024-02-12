@@ -1,1 +1,0 @@
-awk 'NR>=3 && NR<=9 {for (i=1;i<=NF;i++) {n=i; if (NR==3) a[i]=i; a[i]=a[i]" "$i}} END {for (i=1;i<=n;i++) print a[i]}' ../output/output.dat

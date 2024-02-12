@@ -1,2 +1,0 @@
-mv model-bt-settl-recast.dat model-bt-settl-recast-full.dat
-awk 'NR==1 {print} NR>1 && $4<0.3 && $3>=-2 && $2<=6 {for (i=1;i<=NF;i++) if (length($i)>9) $i=sprintf("%.3e",$i+0); print}' model-bt-settl-recast-full.dat | sed 's/e+/e/g' > model-bt-settl-recast.dat
