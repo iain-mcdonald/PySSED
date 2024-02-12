@@ -1,0 +1,20 @@
+stages:
+    - build
+  
+variables:
+    APP_IMG: gitlabreg.acri-cwa.fr/project-explore/sda-gtomo-mini:$CI_BUILD_REF_NAME
+    SERVICE_INPUT_DATA: /temp/input_data/
+    SERVICE_OUTPUT_DATA: /temp/output_data/
+    SERVICE_USER_APP_DATA: /temp/user_app_data/
+    SERVICE_USER_DATA: /temp/user_data/
+    SERVICE_APP_DATA: /temp/app_data/
+
+before_script:
+  - docker info
+  - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN gitlabreg.acri-cwa.fr
+
+build app:
+  stage: build
+  script:
+    - docker build ./sda/ -t ${APP_IMG} -f ./Dockerfile
+    - docker push ${APP_IMG}
