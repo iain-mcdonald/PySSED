@@ -2976,7 +2976,7 @@ def deredden(sed,ancillary,dist,avgrid,gtomo_ebv=-1):
 def estimate_mass(teff,lum):
     # Estimate a stellar mass based on luminosity
     if ((teff>5500.) | (lum<2.)): 
-        if ((teff/7000)**9>lum) & (teff>4000)): # white dwarf
+        if (((teff/7000)**9>lum) & (teff>4000)): # white dwarf
             mass=0.6
         else:
             mass=lum**(1/3.5) # MS star
