@@ -1,0 +1,45 @@
+# Define photometric surveys to query
+# Server = server from which to get data (Gaia/Vizier/File*)
+# Name = internal name for catalogue
+# TableID = server's name for table or filename
+# ObjCol = column containing name of object (or None)
+# Epoch = year of observation for PM correction
+# BeamSize = radius of PSF in arcsec (minimum ability to separate sources, used to mark blending) (")
+# XMatchCone = positional accuracy in catalogue (cone cross-matching radius in ")
+# * File should be tab-separated. The first line should start with "#" and contain the column headings.
+#   Column headings must include "RA" and "Dec"
+# Server	Name	TableID	ObjCol	Epoch	BeamSize	XMatchCone
+Vizier	Gaia	I/355/gaiadr3	Source	2016.0	0.5	0.4
+Vizier	Hipparcos	I/311/hip2	HIP	1991.25	1.0	1.0
+Vizier	Tycho	I/239/tyc_main	TYC	1991.25	1.0	1.0
+Vizier	PanStarrs	II/349/ps1	objID	2011.9	0.5	0.5
+Vizier	GALEX	II/335/galex_ais	Name	2008.5	2.8	2.8
+Vizier	Morel78	II/7A/catalog	LID	2000.0	5.0	5.0
+Vizier	APASS	II/336/apass9	None	2015.0	3.1	1.3
+#Vizier	SDSS7	II/294/sdss7	SDSS	2008.0	1.4	0.5
+Vizier	SDSS12	V/147	SDSS	2008.0	1.4	0.5
+#Vizier	Skymapper	II/358/smss	ObjectId	2015.0	1.4	0.5
+Vizier	CMC15	I/327/cmc15	CMC15	2005.25	1.5	0.5
+Vizier	2MASS	II/246/out	_2MASS	1999.5	1.0	1.0
+#Vizier	DENIS	B/denis/denis	DENIS	1998.5	3.0	1.0
+Vizier	VVV	II/348/vvv2	iauname	2016.0	0.3	1.0
+Vizier	VHS	II/367/vhs_dr5	SrcID	2016.0	0.3	1.0
+Vizier	WISE	II/328/allwise	AllWISE	2010.25	6.0	1.0
+Vizier	catWISE	II/365/catwise	objID	2010.25	6.0	1.0
+Vizier	unWISE	II/363/unwise	objID	2010.25	6.0	1.0
+Vizier	Akari	II/297/irc	objName	2008.0	5.5	1.0
+Vizier	AkariFIS	II/298/fis	objName	2008.0	26.5	5.0
+Vizier	IRAS	II/125/main	IRAS	1985.0	180.0	15.0
+Vizier	COBE	J/ApJS/154/673/DIRBE	DIRBE	1991.9	2520.0	10.0
+Vizier	MSX	V/114/msx6_main	MSX6C	1996.5	20.0	2.0
+Vizier	Herschel70	VIII/106/hppsc070	Name	2011.5	7.0	3.0
+Vizier	Herschel100	VIII/106/hppsc100	Name	2011.5	7.0	3.0
+Vizier	Herschel160	VIII/106/hppsc160	Name	2011.5	7.0	3.0
+#Vizier	HSC	II/342/hsc2	Source	2007.5	0.3	0.3
+#File	JCMT	../data/ness.txt	None	2020.0	10.0	3.0
+#Vizier	Hirschauer	J/ApJ/892/91/table1	Seq	2006.0	2.0	1.0
+#File	Spitzer	../../data/SpitzerNGC5139.tsv	Seq	2009.0	2.0	1.0
+#File	MegaCam	../../data/m5.greg	None	2010.0	1.0	0.5
+File	HST	../data/hstpromo-test.tsv	ID	2000.0	0.1	0.2
+File	HACKSpm	../data/hacks_pm.tsv	ID	2000.0	0.1	0.2
+File	HACKSphot	../data/hacks_phot.tsv	ID	2000.0	0.1	0.2

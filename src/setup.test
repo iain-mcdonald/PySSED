@@ -15,10 +15,10 @@ GaiaEpoch	2016.0
 # -----------------------------------
 
 # File to use for survey descriptors
-SurveyFile	catalogues.default
+SurveyFile	catalogues.test
 
 # File to use for filter definitions and settings
-FilterFile	filters.default
+FilterFile	filters.test
 
 # Default error (as fraction of flux) to assign when error column = None
 # (Now used only as a backup in case of failure)
@@ -60,7 +60,7 @@ WarnMissingCol	1
 # Normally be the deepest/densest catalogue in the field
 # For fields where it is significant, proper motion data is adviseable
 # Must be an internal catalogue name from SurveyFile
-PrimaryCatRef	Gaia
+PrimaryCatRef	HACKSpm
 
 # Trim sources with RA < RA1 and RA > RA2 for box searches
 # 0 = rectangular search, 1 = wedge search
@@ -84,8 +84,8 @@ FixedPMRA	0.00
 FixedPMDec	0.00
 PMRAColID	PMRA
 PMDecColID	PMDec
-PMRAErrColID	PMRAErr
-PMDecColID	PMDecErr
+PMRAErrColID	e_PMRA
+PMDecErrColID	e_PMDec
 
 # Treatment of potential matches
 # None+One: If a lo-res catalogue matches a hi-res catalogue, but not vice versa
