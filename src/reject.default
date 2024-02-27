@@ -35,10 +35,13 @@
 #
 # CatName	CDSLabel	Column	Position	Logical	Value	Result	RejSurvey	RejFilter
 # e.g. reject if:
-#2MASS	Jmag	Qflg	1	=	D	Mask	Same	Same
-#2MASS	Hmag	Qflg	2	=	D	Mask	Same	Same
-#2MASS	Kmag	Qflg	3	=	D	Mask	Same	Same
 # """
+2MASS	Jmag	Qflg	0	=	U	Remove	Same	Same
+2MASS	Hmag	Qflg	1	=	U	Remove	Same	Same
+2MASS	Kmag	Qflg	2	=	U	Remove	Same	Same
+2MASS	Jmag	Qflg	0	=	X	Remove	Same	Same
+2MASS	Hmag	Qflg	1	=	X	Remove	Same	Same
+2MASS	Kmag	Qflg	2	=	X	Remove	Same	Same
 
 # ------------------------------------------------
 # Internal survey rejection based on quality flags

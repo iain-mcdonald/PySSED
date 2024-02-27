@@ -1632,7 +1632,19 @@ def reject_test(reasons,inputdata):
     for i in np.arange(len(reasons)):
         # Identify data to test
         if (reasons[i]['position']>=0):
-            testdata=inputdata[reasons[i]['column']][0][reasons[i]['position']]
+            try:
+                testdata=inputdata[reasons[i]['column']][0][reasons[i]['position']]
+            except:
+                try:
+                    testdata=inputdata[reasons[i]['column']][reasons[i]['position']]
+                except:
+                    print_fail("Fail on rejection testing")
+                    print_fail ("Check the following entry in the rejects file:")
+                    print (inputdata)
+                    print (reasons[i])
+                    print (reasons[i]['column'])
+                    print (inputdata[reasons[i]['column']])
+                    print (inputdata[reasons[i]['column']][0])
         else:
             try:
                 testdata=inputdata[reasons[i]['column']][0]
@@ -5048,7 +5060,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
 
     # Main routine
     errmsg=""
-    version="1.0.20240214"
+    version="1.1.dev.20240226"
     try:
         startmain = datetime.now() # time object
         globaltime=startmain
