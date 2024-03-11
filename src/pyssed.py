@@ -5060,7 +5060,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
 
     # Main routine
     errmsg=""
-    version="1.1.dev.20240226"
+    version="1.1.dev.20240311"
     try:
         startmain = datetime.now() # time object
         globaltime=startmain

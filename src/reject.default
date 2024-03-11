@@ -34,7 +34,7 @@
 # then the weighted average flux will be taken.
 #
 # CatName	CDSLabel	Column	Position	Logical	Value	Result	RejSurvey	RejFilter
-# e.g. reject if:
+# e.g. reject corresponding magnitude if 2MASS or WISE Qflg parameters are U or X
 # """
 2MASS	Jmag	Qflg	0	=	U	Remove	Same	Same
 2MASS	Hmag	Qflg	1	=	U	Remove	Same	Same
@@ -42,6 +42,14 @@
 2MASS	Jmag	Qflg	0	=	X	Remove	Same	Same
 2MASS	Hmag	Qflg	1	=	X	Remove	Same	Same
 2MASS	Kmag	Qflg	2	=	X	Remove	Same	Same
+WISE	W1mag	Qflg	0	=	U	Remove	Same	Same
+WISE	W2mag	Qflg	1	=	U	Remove	Same	Same
+WISE	W3mag	Qflg	2	=	U	Remove	Same	Same
+WISE	W4mag	Qflg	3	=	U	Remove	Same	Same
+WISE	W1mag	Qflg	0	=	X	Remove	Same	Same
+WISE	W2mag	Qflg	1	=	X	Remove	Same	Same
+WISE	W3mag	Qflg	2	=	X	Remove	Same	Same
+WISE	W4mag	Qflg	3	=	X	Remove	Same	Same
 
 # ------------------------------------------------
 # Internal survey rejection based on quality flags
