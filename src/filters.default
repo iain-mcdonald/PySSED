@@ -23,11 +23,11 @@ PanStarrs	rmag	e_rmag	PAN-STARRS/PS1.r	mag	AB	Same	-99	99	10.	0.
 PanStarrs	imag	e_imag	PAN-STARRS/PS1.i	mag	AB	Same	-99	99	10.	0.
 PanStarrs	zmag	e_zmag	PAN-STARRS/PS1.z	mag	AB	Same	-99	99	10.	0.
 PanStarrs	ymag	e_ymag	PAN-STARRS/PS1.y	mag	AB	Same	-99	99	10.	0.
-SDSS7	umag	e_umag	SLOAN/SDSS.u	mag	AB	Same	-99	99	10.	0.
-SDSS7	gmag	e_gmag	SLOAN/SDSS.g	mag	AB	Same	-99	99	10.	0.
-SDSS7	rmag	e_rmag	SLOAN/SDSS.r	mag	AB	Same	-99	99	10.	0.
-SDSS7	imag	e_imag	SLOAN/SDSS.i	mag	AB	Same	-99	99	10.	0.
-SDSS7	zmag	e_zmag	SLOAN/SDSS.z	mag	AB	Same	-99	99	10.	0.
+SDSS16	umag	e_umag	SLOAN/SDSS.u	mag	AB	Same	-99	99	10.	0.
+SDSS16	gmag	e_gmag	SLOAN/SDSS.g	mag	AB	Same	-99	99	10.	0.
+SDSS16	rmag	e_rmag	SLOAN/SDSS.r	mag	AB	Same	-99	99	10.	0.
+SDSS16	imag	e_imag	SLOAN/SDSS.i	mag	AB	Same	-99	99	10.	0.
+SDSS16	zmag	e_zmag	SLOAN/SDSS.z	mag	AB	Same	-99	99	10.	0.
 Skymapper	uPSF	e_uPSF	Skymapper/Skymapper.u	mag	AB	Same	-99	99	10.	0.
 Skymapper	vPSF	e_vPSF	Skymapper/Skymapper.v	mag	AB	Same	-99	99	10.	0.
 Skymapper	gPSF	e_gPSF	Skymapper/Skymapper.g	mag	AB	Same	-99	99	10.	0.

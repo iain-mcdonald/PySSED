@@ -34,7 +34,7 @@
 # then the weighted average flux will be taken.
 #
 # CatName	CDSLabel	Column	Position	Logical	Value	Result	RejSurvey	RejFilter
-# e.g. reject corresponding magnitude if 2MASS or WISE Qflg parameters are U or X
+# e.g. reject corresponding magnitude if 2MASS or WISE Qflag parameters are U or X
 # """
 2MASS	Jmag	Qflg	0	=	U	Remove	Same	Same
 2MASS	Hmag	Qflg	1	=	U	Remove	Same	Same
@@ -42,14 +42,14 @@
 2MASS	Jmag	Qflg	0	=	X	Remove	Same	Same
 2MASS	Hmag	Qflg	1	=	X	Remove	Same	Same
 2MASS	Kmag	Qflg	2	=	X	Remove	Same	Same
-WISE	W1mag	Qflg	0	=	U	Remove	Same	Same
-WISE	W2mag	Qflg	1	=	U	Remove	Same	Same
-WISE	W3mag	Qflg	2	=	U	Remove	Same	Same
-WISE	W4mag	Qflg	3	=	U	Remove	Same	Same
-WISE	W1mag	Qflg	0	=	X	Remove	Same	Same
-WISE	W2mag	Qflg	1	=	X	Remove	Same	Same
-WISE	W3mag	Qflg	2	=	X	Remove	Same	Same
-WISE	W4mag	Qflg	3	=	X	Remove	Same	Same
+WISE	W1mag	qph	0	=	U	Remove	Same	Same
+WISE	W2mag	qph	1	=	U	Remove	Same	Same
+WISE	W3mag	qph	2	=	U	Remove	Same	Same
+WISE	W4mag	qph	3	=	U	Remove	Same	Same
+WISE	W1mag	qph	0	=	X	Remove	Same	Same
+WISE	W2mag	qph	1	=	X	Remove	Same	Same
+WISE	W3mag	qph	2	=	X	Remove	Same	Same
+WISE	W4mag	qph	3	=	X	Remove	Same	Same
 
 # ------------------------------------------------
 # Internal survey rejection based on quality flags
@@ -127,9 +127,12 @@ IPHAS	ha	saturated	-1	=	1	Mask	Same	Same
 
 # The following are from McDonald et al. (2017)
 # (i) SDSS u and z band data are not removed here; (ii)-(iv):
-SDSS7	gmag	mag	-1	d<	-1.0	Mask	Hipparcos	Hpmag
-SDSS7	rmag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
-SDSS7	imag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
+#SDSS7	gmag	mag	-1	d<	-1.0	Mask	Hipparcos	Hpmag
+#SDSS7	rmag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
+#SDSS7	imag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
+SDSS16	gpmag	mag	-1	d<	-1.0	Mask	Hipparcos	Hpmag
+SDSS16	rpmag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
+SDSS16	ipmag	mag	-1	d<	0.0	Mask	Hipparcos	Hpmag
 # (v-ix) APASS B magnitudes 9.95 < APASS < 10.xx mag not removed
 # (ix) APASS i-band data limited by itself, not by r-band; (v-ix):
 APASS	Bmag	mag	-1	d<	-0.2	Mask	Tycho	BTmag
@@ -165,24 +168,38 @@ VVV	Jmag3	mag	-1	d<	-0.7	Mask	2MASS	Jmag
 VVV	Hmag3	mag	-1	d<	-0.7	Mask	2MASS	Hmag
 VVV	Ksmag3	mag	-1	d<	-0.7	Mask	2MASS	Kmag
 # Use APASS instead of SDSS where APASS mag < 9.95
-SDSS7	gmag	mag	-1	<	9.95	Mask	APASS	g_mag
-SDSS7	rmag	mag	-1	<	9.95	Mask	APASS	r_mag
-SDSS7	imag	mag	-1	<	9.95	Mask	APASS	i_mag
-SDSS7	zmag	mag	-1	<	9.95	Mask	APASS	i_mag
+#SDSS7	gmag	mag	-1	<	9.95	Mask	APASS	g_mag
+#SDSS7	rmag	mag	-1	<	9.95	Mask	APASS	r_mag
+#SDSS7	imag	mag	-1	<	9.95	Mask	APASS	i_mag
+#SDSS7	zmag	mag	-1	<	9.95	Mask	APASS	i_mag
+SDSS16	gpmag	mag	-1	<	9.95	Mask	APASS	g_mag
+SDSS16	rpmag	mag	-1	<	9.95	Mask	APASS	r_mag
+SDSS16	ipmag	mag	-1	<	9.95	Mask	APASS	i_mag
+SDSS16	zpmag	mag	-1	<	9.95	Mask	APASS	i_mag
 # Lose SDSS if brighter Tycho target
-SDSS7	gmag	mag	-1	d<	-0.2	Mask	Tycho	BTmag
-SDSS7	rmag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
-SDSS7	imag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
+#SDSS7	gmag	mag	-1	d<	-0.2	Mask	Tycho	BTmag
+#SDSS7	rmag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
+#SDSS7	imag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
+SDSS16	gpmag	mag	-1	d<	-0.2	Mask	Tycho	BTmag
+SDSS16	rpmag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
+SDSS16	ipmag	mag	-1	d<	-0.2	Mask	Tycho	VTmag
 # Lose SDSS if brighter Gaia target
-SDSS7	gmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
-SDSS7	rmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
-SDSS7	imag	mag	-1	d<	-2.0	Mask	Gaia	RPmag
+#SDSS7	gmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
+#SDSS7	rmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
+#SDSS7	imag	mag	-1	d<	-2.0	Mask	Gaia	RPmag
+SDSS16	gpmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
+SDSS16	rpmag	mag	-1	d<	-1.0	Mask	Gaia	Gmag
+SDSS16	ipmag	mag	-1	d<	-2.0	Mask	Gaia	RPmag
 # Lose SDSS if brighter PanStarrs target
-SDSS7	gmag	mag	-1	d<	-0.5	Mask	PanStarrs	gmag
-SDSS7	rmag	mag	-1	d<	-0.5	Mask	PanStarrs	rmag
-SDSS7	imag	mag	-1	d<	-0.5	Mask	PanStarrs	imag
-SDSS7	zmag	mag	-1	d<	-0.5	Mask	PanStarrs	zmag
-# Lose Morel if greatly different from Gaia, Tycho or Hipparcos
+#SDSS7	gmag	mag	-1	d<	-0.5	Mask	PanStarrs	gmag
+#SDSS7	rmag	mag	-1	d<	-0.5	Mask	PanStarrs	rmag
+#SDSS7	imag	mag	-1	d<	-0.5	Mask	PanStarrs	imag
+#SDSS7	zmag	mag	-1	d<	-0.5	Mask	PanStarrs	zmag
+SDSS16	gpmag	mag	-1	d<	-0.5	Mask	PanStarrs	gmag
+SDSS16	rpmag	mag	-1	d<	-0.5	Mask	PanStarrs	rmag
+SDSS16	ipmag	mag	-1	d<	-0.5	Mask	PanStarrs	imag
+SDSS16	zpmag	mag	-1	d<	-0.5	Mask	PanStarrs	zmag
+## Lose Morel if greatly different from Gaia, Tycho or Hipparcos
 Morel78	U	mag	-1	d>	0.5	Mask	Gaia	BPmag
 Morel78	B	mag	-1	D>	2.0	Mask	Gaia	BPmag
 Morel78	V	mag	-1	D>	2.0	Mask	Gaia	Gmag

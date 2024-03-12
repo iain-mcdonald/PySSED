@@ -17,7 +17,8 @@ Vizier	GALEX	II/335/galex_ais	Name	2008.5	2.8	2.8
 Vizier	Morel78	II/7A/catalog	LID	2000.0	5.0	5.0
 Vizier	APASS	II/336/apass9	None	2015.0	3.1	1.3
 #Vizier	SDSS7	II/294/sdss7	SDSS	2008.0	1.4	0.5
-Vizier	SDSS12	V/147	SDSS	2008.0	1.4	0.5
+#Vizier	SDSS12	V/147/sdss12	SDSS12	2008.0	1.4	0.5
+Vizier	SDSS16	V/154/sdss16	objID	2008.0	1.4	0.5
 #Vizier	Skymapper	II/358/smss	ObjectId	2015.0	1.4	0.5
 Vizier	CMC15	I/327/cmc15	CMC15	2005.25	1.5	0.5
 Vizier	2MASS	II/246/out	_2MASS	1999.5	1.0	1.0
