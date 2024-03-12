@@ -3331,8 +3331,10 @@ def sed_fit_simple(sed,ancillary,modeldata,avdata,ebv):
         if ((np.isnan(chisq)) | (chisq>=1.e99)):
             print_warn("Best-fitting model returned NaN - reverting to blackbody fit")
             sed,modwave,modflux,teff,rad,lum,chisq=sed_fit_bb(sed[sed['mask']>0],ancillary,avdata,ebv)
-            #sed[sed['mask']>0]['model']=foo['model']
-            return sed,wavel,model,teff,rad,lum,logg,feh,chisq,ebv
+            foo=np.zeros_like(sed['model']) # use of intermediate foo solves weird bug in sed[sed['mask']>0]['model']=modflux
+            foo[sed['mask']>0]=modflux
+            sed['model']=foo
+            return sed,wavel,modflux,teff,rad,lum,logg,feh,chisq,ebv
         else:
             if (verbosity>=80):
                 print ("Beginning fit = Teff,chi^2_r:",teff,chisq)
