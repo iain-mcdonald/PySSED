@@ -276,6 +276,11 @@ def parse_args(cmdargs):
             if (len(procargs)>1):
                 setupfile=procargs[-1]
             procparams=[]
+        elif (proctype=="trap"):
+            print ("(2) Perform a trapezoidal fit")
+            if (len(procargs)>1):
+                setupfile=procargs[-1]
+            procparams=[]
         elif (proctype=="simple"):
             print ("(2) Perform a simple (fast) fit")
             try:
@@ -298,7 +303,7 @@ def parse_args(cmdargs):
             print ("    Using constraints file:",procparams)
         else:
             print_fail ("ERROR! Processing type was: "+procargs[0])
-            print ("Expected one of: none, bb, simple, fit, binary")
+            print ("Expected one of: none, bb, trap, simple, fit, binary")
             proctype=""
             procparams=[]
             error=1
@@ -621,14 +626,16 @@ def get_gaia_obj(cmdparams):
             if (coords[0]!=-999 and coords[1]!=-999 and verbosity>40):
                 print ("Using co-ordinates: RA",coords[0],"deg, Dec",coords[1],"deg")
         except:
-        # and if not, then ask SIMBAD for a position resolution
+    # and if not, then ask SIMBAD for a position resolution
             if (verbosity>40):
                 print ("Resolving",cmdparams,"using SIMBAD")
             attempts = 0
             result_table = 0
             while attempts < maxattempts:
                 try:
-                    result_table = Simbad.query_object(cmdparams)
+                    customSimbad = Simbad()
+                    customSimbad.add_votable_fields('pmra','pmdec')
+                    result_table = customSimbad.query_object(cmdparams)
                     break
                 except:
                     attempts += 1
@@ -642,15 +649,30 @@ def get_gaia_obj(cmdparams):
                 print_fail ("Could not connect to SIMBAD server")
                 raise Exception("Could not connect to SIMBAD server")
             try:
+                gaiaepoch=float(pyssedsetupdata[pyssedsetupdata[:,0]=="GaiaEpoch",1][0])
+                if (verbosity>=99):
+                    print ("SIMBAD result table:")
+                    print (result_table)
                 if (verbosity>60):
                     print (result_table['RA'][0],result_table['DEC'][0])
                 rac=np.fromstring(result_table['RA'][0],dtype=float,sep=" ")
                 decc=np.fromstring(result_table['DEC'][0],dtype=float,sep=" ")
                 try:
+                    pmra=result_table['PMRA'][0]
+                    pmdec=result_table['PMDEC'][0]
+                except:
+                    pmra=0; pmdec=0
+                try:
                     if (result_table['DEC'][0][0]=="+"):
-                        coords=[rac[0]*15.+rac[1]/4+rac[2]/240,decc[0]+decc[1]/60+decc[2]/3600]
+                        coords2000=[rac[0]*15.+rac[1]/4+rac[2]/240,decc[0]+decc[1]/60+decc[2]/3600]
                     else:
-                        coords=[rac[0]*15.+rac[1]/4+rac[2]/240,decc[0]-decc[1]/60-decc[2]/3600]
+                        coords2000=[rac[0]*15.+rac[1]/4+rac[2]/240,decc[0]-decc[1]/60-decc[2]/3600]
+                    pmoffset=[pmra/3.6e6*(gaiaepoch-2000.)/np.cos(coords2000[1]/180*np.pi),pmdec/3.6e6*(gaiaepoch-2000.)]
+                    coords=np.add(coords2000,pmoffset)
+                    if (verbosity>95):
+                        print ("Epoch 2000 co-ordinates: RA",coords2000[0],"deg, Dec",coords2000[1],"deg")
+                        print ("PM offset: RA",pmoffset[0],"deg, Dec",pmoffset[1],"deg")
+                        print ("Epoch",gaiaepoch,"co-ordinates: RA",coords[0],"deg, Dec",coords[1],"deg")
                 except IndexError as e:
                     print_fail ("Received malformed source co-ordinates. Could not identify source.")
                     return 0,"Source co-ordinates error"
@@ -662,6 +684,9 @@ def get_gaia_obj(cmdparams):
 
         # Now query the Gaia DR3 database for a match
         dr3_obj=query_gaia_coords(coords[0],coords[1])
+        if (verbosity>95):
+            print ("Gaia returned:")
+            print (dr3_obj)
         # If there's a match...
         if (dr3_obj>0):
             if (verbosity>40):
@@ -1062,9 +1087,15 @@ def query_gaia_coords(ra,dec):
     while attempts < maxattempts:
         try:
             result=Gaia.query_object_async(coordinate=coord, width=width, height=height, verbose=False)
+            if (verbosity > 95):
+                print ("Gaia.query_object_async returned:")
+                print (result)
             # Trap null result
             try:
-                dr3_obj=result['source_id'][0]
+                dr3_obj=result['SOURCE_ID'][0]
+                if (verbosity > 95):
+                    print ("DR3_obj:")
+                    print (dr3_obj)
                 break
             except:
                 dr3_obj=0
@@ -1391,12 +1422,12 @@ def get_vizier_single(cmdparams,sourcedata):
                     err=0
                 elif (isfloat(ancillary_queries[i]['errname'])):
                     err=float(ancillary_queries[i]['errname'])
-                elif ("/" in ancillary_queries[i]['errname']): # allow upper/lower errors
+                elif ("/" in ancillary_queries[i]['errname']): # allow confidence limits
                     errs=str.split(ancillary_queries[i]['errname'],sep="/")
-                    err=(vizier_data[0][errs[0]][0]+vizier_data[0][errs[1]][0])/2.
-                elif (":" in ancillary_queries[i]['errname']): # allow upper/lower confidence limits
-                    errs=str.split(ancillary_queries[i]['errname'],sep=":")
                     err=(vizier_data[0][errs[0]][0]-vizier_data[0][errs[1]][0])/2.
+                elif (":" in ancillary_queries[i]['errname']): # allow upper/lower errors
+                    errs=str.split(ancillary_queries[i]['errname'],sep=":")
+                    err=(vizier_data[0][errs[0]][0]+vizier_data[0][errs[1]][0])/2.
                 else:
                     err=vizier_data[0][ancillary_queries[i]['errname']][0]
                 if (vizier_data[0][ancillary_queries[i]['colname']][0]!="--"):
@@ -1883,8 +1914,11 @@ def get_sed_single(cmdparams):
             # Just use co-ordinates: try parsing co-ordinates first, then ask SIMBAD
             if (verbosity>40):
                 print ("No Gaia or Hipparcos ID: using fixed co-ordinates only.")
+                exit()
             try:
-                coords=np.fromstring(cmdparams,dtype=float,sep=" ")
+                with warnings.catch_warnings(): # Numpy 1.25 warning trapped by try/except
+                    warnings.filterwarnings("ignore",message="string or file could not be read to its end due to unmatched data")
+                    coords=np.fromstring(cmdparams,dtype=float,sep=" ")
                 if (coords[0]>=0 and coords[0]<=360 and coords[1]>=-90 and coords[1]<=90):
                     if (verbosity>60):
                         print (coords)
@@ -2842,12 +2876,12 @@ def compile_areaseds(seds,weights,photdata,ancs,ancweights,ancdata,ra1=0.,ra2=0.
                         err=0
                     elif (isfloat(anc_queries[k]['errname'])):
                         err=float(anc_queries[k]['errname'])
-                    elif ("/" in anc_queries[k]['errname']): # allow upper/lower errors
+                    elif ("/" in anc_queries[k]['errname']): # allow upper/lower confidence limits
                         errs=str.split(anc_queries[k]['errname'],sep="/")
-                        err=(data[errs[0]]+data[errs[1]])/2.
-                    elif (":" in anc_queries[k]['errname']): # allow upper/lower confidence limits
-                        errs=str.split(anc_queries[k]['errname'],sep=":")
                         err=(data[errs[0]]-data[errs[1]])/2.
+                    elif (":" in anc_queries[k]['errname']): # allow upper/lower errors
+                        errs=str.split(anc_queries[k]['errname'],sep=":")
+                        err=(data[errs[0]]+data[errs[1]])/2.
                     else:
                         try:
                             err=data[anc_queries[k]['errname']]
@@ -3035,7 +3069,7 @@ def adopt_distance(ancillary):
             plxdist=[]
             plxdisterr=[]
     else:
-        if (plx>0.):
+        if (len(plx)>0.):
             plxdist=1000./plx
             plxdisterr=plxerr/plx*plxdist
             plxdisterr=np.where(plxdisterr>0,plxdisterr,plxdist*minerr)
@@ -3059,13 +3093,25 @@ def adopt_distance(ancillary):
     foo=ancillary[(ancillary['parameter']=="Distance")]
     d=foo[(foo['mask']==True) & (foo['value']>0.)]['value']
     derr=foo[(foo['mask']==True) & (foo['value']>0.)]['err']
-    if (verbosity > 80):
-#    print (ancillary)
-#    if (verbosity > 20):
+    if (verbosity >= 80):
+        print (ancillary)
         print ("Plx:",plx,plxerr)
         print ("Dist[plx]:  ",plxdist,plxdisterr)
         print ("Dist[other]:",d,derr)
-    
+
+    # Identify if parallax or distance has higher priority and remove the other
+    if (len(d)>0) & (len(plxdist>0)):
+        priplx=ancillary[(ancillary['parameter']=="Parallax")]['priority']
+        pridist=ancillary[(ancillary['parameter']=="Distance")]['priority']
+        if (np.min(priplx)>np.min(pridist)):
+            if (verbosity>=98):
+                print ("Using distance:",priplx,pridist)
+            plxdist=[]
+        elif (np.min(priplx)<np.min(pridist)):
+            if (verbosity>=98):
+                print ("Using parallax",priplx,pridist)
+            d=[]
+   
     # Now combine them by weighted error
     derr=np.where(derr>0,derr,d*minerr)
     if ((len(d)>0) & (len(plxdist)>0)):
@@ -3177,6 +3223,41 @@ def sed_fit_bb(sed,ancillary,avdata,ebv):
         chisq=0.
     
     return sed,wavel,bb,teff,rsun,lum,chisq
+
+# -----------------------------------------------------------------------------
+def sed_fit_trapezoid(sed,ancillary,avdata,ebv):
+    # Fit L via trapezoidal integration
+
+    dist=adopt_distance(ancillary)
+    flux1A=sed[sed['mask']>0]['dered'][0]*10**((-10-np.log(sed[sed['mask']>0]['wavel'][0]))*4) # Wien tail
+    flux1m=sed[sed['mask']>0]['dered'][0]*10**((np.log(sed[sed['mask']>0]['wavel'][0]))*-2) # R-J tail
+    wavel=np.append(np.append(np.array(1e-10),sed[sed['mask']>0]['wavel']/1.e10),np.array(1))
+    flux=np.append(np.append(np.array(flux1A),sed[sed['mask']>0]['dered']),np.array(flux1m))
+    #ferr=sed[sed['mask']>0]['derederr']
+    #ferr=np.nan_to_num(ferr, nan=1.e6)
+    #freq=299792458./wavel
+
+    if (dist>0.):
+        # Interpolate on log wavelength scale
+        modelwavel=np.arange(-3,-10,-0.01)
+        modelflux=10**np.interp(modelwavel,np.log10(wavel),np.log10(flux))
+        modelfreq=299792458./10**modelwavel
+        # Integrate
+        bolflux=np.trapz(modelflux,modelfreq) # Jy*Hz = 10^26 W/m^2
+        # Multiply by distance
+        lum=bolflux*4*np.pi*(dist*3.086e16)**2/1.e26 # Watts
+        lum/=3.846e26 # solar luminosities
+    else: # If no distance
+        lum=0.
+
+    teff=0.
+    rsun=0.
+    chisq=0.
+
+    model=np.zeros_like(sed['model'])
+    wavel=sed['wavel']
+    
+    return sed,wavel,model,teff,rsun,lum,chisq
 
 # -----------------------------------------------------------------------------
 def sed_fit_simple(sed,ancillary,modeldata,avdata,ebv):
@@ -5062,7 +5143,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
 
     # Main routine
     errmsg=""
-    version="1.1.dev.20240312"
+    version="1.1.dev.20240320"
     try:
         startmain = datetime.now() # time object
         globaltime=startmain
@@ -5075,7 +5156,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
         task_id = handler.task_id
     total_steps = total_sources + 4
     results = {}
-    hrd_results = pd.DataFrame(data=[], columns=["Object", "Teff", "Lum", "Rad", "Chi^2"])
+    hrd_results = pd.DataFrame(data=[], columns=["Object", "Teff", "Lum", "Rad", "Dist", "Chi^2"])
     if (handler != None):
         handler.submit_status(task_id, "processing", { "stage": 2, "stages": 4, "status": "Loading Setup", "progress": 1 / total_steps, "step": 1, "totalSteps": total_steps })
 
@@ -5278,8 +5359,8 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
         if (outappend==0):
             # Write parameter file header
             with open(outparamfile, "w") as f:
-                f.write("#Object"+sep+"Effective temperature"+sep+"Luminosity"+sep+"Radius"+sep+"Chi^2\n")
-                f.write("#Name"+sep+"Kelvin"+sep+"Solar luminosities"+sep+"Solar Radii"+sep+"\n")
+                f.write("#Object"+sep+"Effective temperature"+sep+"Luminosity"+sep+"Radius"+sep+"Distance"+sep+"Chi^2\n")
+                f.write("#Name"+sep+"Kelvin"+sep+"Solar luminosities"+sep+"Solar Radii"+"pc"+sep+"\n")
             np.savetxt(outancfile,ancillary_params,fmt="%s",delimiter=sep,newline=sep)
             with open(outancfile, "a") as f:
                 f.write("\n")
@@ -5290,30 +5371,33 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                 masterlist=np.array(["RA","Dec","PMRA","PMDec"],dtype="str")
                 fittedlist=np.array(["Teff","Lum"],dtype="str")
                 adoptedlist=np.array(["Distance","E(B-V)","logg","[Fe/H]"],dtype="str")
+                statlist=np.array(["chisq","RUWE","GoF","UVXS","IRXS"],dtype="str")
                 catlist=np.copy(catdata['catname'])
                 filtlist=np.copy(filtdata['catname'])
                 ancillarylist=np.copy(ancillary_queries['paramname'])
-                masteroutputlabels=np.concatenate((objectlist,masterlist,masterlist,fittedlist,fittedlist,adoptedlist,adoptedlist,catlist,filtlist,filtlist,filtlist,filtlist,ancillarylist,ancillarylist,ancillarylist))
+                masteroutputlabels=np.concatenate((objectlist,masterlist,masterlist,fittedlist,fittedlist,adoptedlist,adoptedlist,statlist,catlist,filtlist,filtlist,filtlist,filtlist,ancillarylist,ancillarylist,ancillarylist))
                 # Filters
                 objectlist=np.array(["#Object"],dtype="str")
                 masterlist=np.array(["-","-","-","-"],dtype="str")
                 fittedlist=np.array(["-","-"],dtype="str")
                 adoptedlist=np.array(["-","-","-","-"],dtype="str")
+                statlist=np.array(["-","-","-","-","-"],dtype="str")
                 catlist=np.full(len(catlist),"-")
                 filtlist=np.copy(filtdata['svoname'])
                 ancillarylist=np.full(len(ancillarylist),"-")
-                masteroutputfilters=np.concatenate((objectlist,masterlist,masterlist,fittedlist,fittedlist,adoptedlist,adoptedlist,catlist,filtlist,filtlist,filtlist,filtlist,ancillarylist,ancillarylist,ancillarylist))
+                masteroutputfilters=np.concatenate((objectlist,masterlist,masterlist,fittedlist,fittedlist,adoptedlist,adoptedlist,statlist,catlist,filtlist,filtlist,filtlist,filtlist,ancillarylist,ancillarylist,ancillarylist))
                 # Units
                 masterlist=np.array(["deg","deg","mas/yr","mas/yr"],dtype="str")
                 fittedlist=np.array(["K","LSun"],dtype="str")
                 adoptedlist=np.array(["pc","mag","dex","dex"],dtype="str")
                 filtlist[:]="Jy"
+                statlist[:]="-"
                 ancillarylist=ancillary_queries['units']
-                masteroutputunits=np.concatenate((objectlist,masterlist,masterlist,fittedlist,fittedlist,adoptedlist,adoptedlist,catlist,filtlist,filtlist,filtlist,filtlist,ancillarylist,ancillarylist,np.full(len(ancillarylist),"-")))
+                masteroutputunits=np.concatenate((objectlist,masterlist,masterlist,fittedlist,fittedlist,adoptedlist,adoptedlist,statlist,catlist,filtlist,filtlist,filtlist,filtlist,ancillarylist,ancillarylist,np.full(len(ancillarylist),"-")))
                 # Data type	[OBJECT ADOPTED FITTED ANCILLARY PHOTOMETRY MODEL]
-                masteroutputtypes1=np.concatenate((objectlist,np.full(len(masterlist),"Adopted"),np.full(len(masterlist),"Adopted"),np.full(len(fittedlist),"Fitted"),np.full(len(fittedlist),"Fitted"),np.full(len(adoptedlist),"Adopted"),np.full(len(adoptedlist),"Adopted"),np.full(len(catlist),"ID"),np.full(len(filtlist),"Photometry"),np.full(len(filtlist),"Photometry"),np.full(len(filtlist),"Dereddened"),np.full(len(filtlist),"Model"),np.full(len(ancillarylist),"Ancillary"),np.full(len(ancillarylist),"Ancillary"),np.full(len(ancillarylist),"Ancillary")))
+                masteroutputtypes1=np.concatenate((objectlist,np.full(len(masterlist),"Adopted"),np.full(len(masterlist),"Adopted"),np.full(len(fittedlist),"Fitted"),np.full(len(fittedlist),"Fitted"),np.full(len(adoptedlist),"Adopted"),np.full(len(adoptedlist),"Adopted"),np.full(len(statlist),"Statistic"),np.full(len(catlist),"ID"),np.full(len(filtlist),"Photometry"),np.full(len(filtlist),"Photometry"),np.full(len(filtlist),"Dereddened"),np.full(len(filtlist),"Model"),np.full(len(ancillarylist),"Ancillary"),np.full(len(ancillarylist),"Ancillary"),np.full(len(ancillarylist),"Ancillary")))
                 # Data type [OBJECT VALUE ERROR SOURCE]
-                masteroutputtypes2=np.concatenate((objectlist,np.full(len(masterlist),"Value"),np.full(len(masterlist),"Error"),np.full(len(fittedlist),"Value"),np.full(len(fittedlist),"Error"),np.full(len(adoptedlist),"Value"),np.full(len(adoptedlist),"Error"),np.full(len(catlist),"ID"),np.full(len(filtlist),"Value"),np.full(len(filtlist),"Error"),np.full(len(filtlist),"Value"),np.full(len(filtlist),"Value"),np.full(len(ancillarylist),"Value"),np.full(len(ancillarylist),"Error"),np.full(len(ancillarylist),"Source")))
+                masteroutputtypes2=np.concatenate((objectlist,np.full(len(masterlist),"Value"),np.full(len(masterlist),"Error"),np.full(len(fittedlist),"Value"),np.full(len(fittedlist),"Error"),np.full(len(adoptedlist),"Value"),np.full(len(adoptedlist),"Error"),np.full(len(statlist),"Value"),np.full(len(catlist),"ID"),np.full(len(filtlist),"Value"),np.full(len(filtlist),"Error"),np.full(len(filtlist),"Value"),np.full(len(filtlist),"Value"),np.full(len(ancillarylist),"Value"),np.full(len(ancillarylist),"Error"),np.full(len(ancillarylist),"Source")))
                 # Wavelength, width [Angstroms]
                 # A_lambda/Av [value] - not easily accessible, need dust_extinction's F99
                 filtwave=np.empty(len(filtdata['svoname']),dtype=float)
@@ -5328,9 +5412,9 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                     wavel=np.where(filtwave[i]>=1000., filtwave[i], 1000.) # Prevent overflowing the function
                     wavel=np.where(wavel<=33333., wavel, 33333.)            #
                     filtalamb[i]=-2.5*np.log10(ext.extinguish(wavel*u.AA, Av=1.))
-                masteroutputwave=np.concatenate((np.array(["#Wavelength[AA]"],dtype="str"),np.full(len(masterlist)*2,"-"),np.full(len(fittedlist)*2,"-"),np.full(len(adoptedlist)*2,"-"),np.full(len(catlist),"-"),filtwave,filtwave,filtwave,filtwave,np.full(len(ancillarylist)*3,"-")))
-                masteroutputdw=np.concatenate((np.array(["#Width[AA]"],dtype="str"),np.full(len(masterlist)*2,"-"),np.full(len(fittedlist)*2,"-"),np.full(len(adoptedlist)*2,"-"),np.full(len(catlist),"-"),filtdw,filtdw,filtdw,filtdw,np.full(len(ancillarylist)*3,"-")))
-                masteroutputalamb=np.concatenate((np.array(["#Alambda"],dtype="str"),np.full(len(masterlist)*2,"-"),np.full(len(fittedlist)*2,"-"),np.full(len(adoptedlist)*2,"-"),np.full(len(catlist),"-"),filtalamb,filtalamb,filtalamb,filtalamb,np.full(len(ancillarylist)*3,"-")))
+                masteroutputwave=np.concatenate((np.array(["#Wavelength[AA]"],dtype="str"),np.full(len(masterlist)*2,"-"),np.full(len(fittedlist)*2,"-"),np.full(len(adoptedlist)*2,"-"),np.full(len(statlist),"-"),np.full(len(catlist),"-"),filtwave,filtwave,filtwave,filtwave,np.full(len(ancillarylist)*3,"-")))
+                masteroutputdw=np.concatenate((np.array(["#Width[AA]"],dtype="str"),np.full(len(masterlist)*2,"-"),np.full(len(fittedlist)*2,"-"),np.full(len(adoptedlist)*2,"-"),np.full(len(statlist),"-"),np.full(len(catlist),"-"),filtdw,filtdw,filtdw,filtdw,np.full(len(ancillarylist)*3,"-")))
+                masteroutputalamb=np.concatenate((np.array(["#Alambda"],dtype="str"),np.full(len(masterlist)*2,"-"),np.full(len(fittedlist)*2,"-"),np.full(len(adoptedlist)*2,"-"),np.full(len(statlist),"-"),np.full(len(catlist),"-"),filtalamb,filtalamb,filtalamb,filtalamb,np.full(len(ancillarylist)*3,"-")))
                 # Write the master output file headers
                 with open(outmasterfile, "w") as f:
                     f.write("#PySSED output version"+version+"\n")                
@@ -5562,6 +5646,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
 
             teff=0; lum=0; rad=0; logg=0; feh=0
             chisq=0; fitsuccess=0
+            oe=0; ruwe=0; gof=0; avoeflux=0; uvxs=0; irxs=0
 
             # Do we need to process the SEDs? No...?
             if (proctype == "none"):
@@ -5585,6 +5670,13 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                     sed,modwave,modflux,teff,rad,lum,chisq=sed_fit_bb(sed,ancillary,avdata,ebv)
                     logg=-9.99
                     feh=-9.99
+                # ...trapezoid
+                elif (proctype == "trap"):
+                    if (verbosity > 20):
+                        print ("Fitting SED with trapezoidal integration...")
+                    sed,modwave,modflux,teff,rad,lum,chisq=sed_fit_trapezoid(sed,ancillary,avdata,ebv)
+                    logg=-9.99
+                    feh=-9.99
                 # ...simple SED fit
                 elif (proctype == "simple"):
                     if (verbosity > 20):
@@ -5597,13 +5689,12 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                     if (verbosity > 20):
                         print ("Fitting SED with binary stellar model...")
                 # Assuming sensible results are returned...
-                if (teff>0.):
+                if ((teff>0.) or (proctype=="trap")):
                     # Unless processing a single source, add entry to global output files
                     #if (cmdtype!="single"):
-                    outparams=str(source)+sep+str(teff)+sep+str(lum)+sep+str(rad)+sep+str(chisq)+"\n"
-                    added = pd.DataFrame(data=[[source, str(teff), str(lum), str(rad), str(chisq)]], columns=["Object", "Teff", "Lum", "Rad", "Chi^2"])
+                    outparams=str(source)+sep+str(teff)+sep+str(lum)+sep+str(rad)+sep+str(dist)+sep+str(chisq)+"\n"
+                    added = pd.DataFrame(data=[[source, str(teff), str(lum), str(rad), str(dist), str(chisq)]], columns=["Object", "Teff", "Lum", "Rad", "Dist", "Chi^2"])
                     hrd_results = pd.concat([hrd_results, added])
-                    #hrd_results = hrd_results.append({ "Object": source, "Teff": str(teff), "Lum": str(lum), "Rad": str(rad), "Chi^2": str(chisq) }, ignore_index=True)
                     with open(outparamfile, "a") as f:
                         f.write(outparams)
                     #outanc=str(source)+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='RA') & (ancillary['mask']==True)]['value']))+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='RA') & (ancillary['mask']==True)]['err']))+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='Dec') & (ancillary['mask']==True)]['value']))+sep+str(np.squeeze(ancillary[(ancillary['parameter']=='Dec') & (ancillary['mask']==True)]['err']))
@@ -5622,12 +5713,36 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                         print ("...dist=",dist,"pc, E(B-V)=",ebv,"mag, chi^2=",chisq)
                     # Add model flux to SED
                     sed['model']=modflux
-#                    modelledsed=sed[sed['mask']==True]
-#                    j=0
-#                    for i in np.arange(len(sed)):
-#                        if (sed[i] in modelledsed):
-#                            sed[i]['model']=modflux[j]
-#                            j+=1
+
+                    # Calculate goodness of fit and excess parameters
+                    truesed=sed[sed['mask']==True]
+                    modelledsed=truesed[truesed['model']>0]
+                    if (len(modelledsed)>0):
+                        oe=modelledsed['dered']/modelledsed['model']-1
+                        fracerr=modelledsed['derederr']/modelledsed['model']
+                        ruwe=np.average(np.abs(oe)/fracerr)
+                        gof=np.median(np.abs(oe))
+                        uvsed=truesed[modelledsed['wavel']<4000.]
+                        if (len(uvsed)>0):
+                            uvxs=np.average(uvsed['dered']/uvsed['model']-1)
+                        else:
+                            uvxs=0
+                        irsed=modelledsed[modelledsed['wavel']>30000.]
+                        if (len(irsed)>0):
+                            irxs=np.average(irsed['dered']/irsed['model']-1)
+                        else:
+                            irxs=0
+                        if (verbosity>80):
+                            print ("Obs/Exp flux:",oe)
+                            print ("fracerr:",fracerr)
+                            print ("ruwe:",ruwe)
+                            print ("gof:",gof)
+                            print ("UVXS:",uvxs)
+                            print ("IRXS:",irxs)
+                    else:
+                        if (verbosity>80):
+                            print ("No modelled SED points.")
+
                     fitsuccess=1
                 else:
                     print_warn ("Could not fit data for this object")
@@ -5776,6 +5891,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                 fittederror=np.array([0,0],dtype="str")
                 adoptedlist=np.array([dist,ebv,logg,feh],dtype="str")
                 adoptederror=np.array([0,0,0,0],dtype="str")
+                statlist=np.array([chisq,ruwe,gof,uvxs,irxs])
                 filtlist=np.copy(filtdata['svoname'])
                 catlist=np.copy(catdata['catname'])
                 objlist=np.zeros(len(catlist),dtype="object")
@@ -5836,7 +5952,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
                     except:
                         srclist[i]=0.
 #                masteroutputdata=np.concatenate((objectlist,masterlist.astype(str),mastererror.astype(str),fittedlist,fittederror,adoptedlist,adoptederror,fluxlist,ferrlist,deredlist,modellist,vallist,errlist,srclist.astype(str)))
-                masteroutputdata=np.concatenate((objectlist,masterlist.astype(str),mastererror.astype(str),fittedlist,fittederror,adoptedlist,adoptederror,objlist,fluxlist,ferrlist,deredlist,modellist,vallist,errlist,srclist))
+                masteroutputdata=np.concatenate((objectlist,masterlist.astype(str),mastererror.astype(str),fittedlist,fittederror,adoptedlist,adoptederror,statlist,objlist,fluxlist,ferrlist,deredlist,modellist,vallist,errlist,srclist))
                 with open(outmasterfile, "a") as f:
                     f.write(sep.join(str(x) for x in masteroutputdata)+"\n")
                 if (handler != None):
