@@ -329,6 +329,9 @@ WeightOffset	0.05
 ModelCode	bt-settl
 # If the following limits are changed then the grid needs recomputed 
 RecomputeModelGrid	0
+# Model filename for Vega
+VegaModelFile	t09600g+4.00m-0.50a+0.20.dat
+
 # Restrict models to those between these temperatures, log(g), [Fe/H] and [alpha/Fe]
 # This can improve speed
 #ModelTeffLo	1899.

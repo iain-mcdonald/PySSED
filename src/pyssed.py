@@ -1742,17 +1742,16 @@ def reject_test(reasons,inputdata):
             except:
                 try:
                     testdata=inputdata[reasons[i]['column']][reasons[i]['position']]
-                except IndexError:
+                except (IndexError,ValueError):
                     try:
                         foo=inputdata[reasons[i]['column']] # Column exists so pass with null test data
                         testdata=""
-                    except IndexError: # Column does not exist so fail
+                    except (IndexError,ValueError): # Column does not exist so fail
                         print_fail("Fail on rejection testing")
                         print_fail ("Check the following entry in the rejects file:")
-                        print (inputdata)
-                        print (reasons[i])
-                        print (reasons[i]['column'])
-                        print (inputdata[reasons[i]['column']])
+                        print ("Criteria:",reasons[i])
+                        print ("Queried column:",reasons[i]['column'])
+                        print ("Possible options:",inputdata.dtype.names)
                         raise
         else:
             try:
@@ -5456,7 +5455,7 @@ def pyssed(cmdtype,cmdparams,proctype,procparams,setupfile,handler,total_sources
 
     # Main routine
     errmsg=""
-    version="1.1.dev.20250129"
+    version="1.2.dev.20250304"
     try:
         startmain = datetime.now() # time object
         globaltime=startmain
